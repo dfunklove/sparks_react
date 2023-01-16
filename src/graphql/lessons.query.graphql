@@ -1,0 +1,5 @@
+query GetLessons {
+  lessons {
+    id
+  }
+}

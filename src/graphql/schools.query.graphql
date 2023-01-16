@@ -1,0 +1,6 @@
+query GetSchools {
+  schools {
+    id
+    name
+  }
+}
