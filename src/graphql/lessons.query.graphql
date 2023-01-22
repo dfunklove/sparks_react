@@ -1,5 +1,35 @@
+query GetLesson($id: ID!) {
+  lesson(pk: $id) {
+    id
+    school {
+      id
+      name
+    }
+    student {
+      id
+      firstName
+      lastName
+    }
+    timeIn
+    timeOut
+    user {
+      id
+      firstName
+      lastName
+    }
+  }
+}
+
 query GetLessons {
   lessons {
     id
+  }
+}
+
+mutation CreateLesson($lesson: LessonInput!) {
+  createLesson(input: $lesson) {
+    ... on Lesson {
+      id
+    }
   }
 }

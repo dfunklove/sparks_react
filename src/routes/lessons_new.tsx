@@ -1,15 +1,42 @@
-import { Form, Link, redirect } from "react-router-dom";
-import { useQuery } from 'urql'
+import { Form, redirect } from "react-router-dom";
 import { Student } from '../types'
+import { LessonInput } from '../graphql/generated'
 import { GetStudentsDocument } from '../graphql/generated'
 
-export async function action({ request, params }) {
+export const action = ({createLesson}) => async ({ request, params }) => {
   const formData = await request.formData();
-  const lessonData = Object.fromEntries(formData);
+  const school_id = formData.get("school_id");
+  const student_id = formData.get("student_id");
+  const lessonData: LessonInput = { 
+    school: { id: school_id }, 
+    student: { id: student_id, school: { id: school_id } },
+    timeIn: new Date(),
+    user: { id: "1"}
+  }
+
+  console.log("Create Lesson data:")
   console.log(lessonData);
-  const lesson = { id: 1 }; // create lesson
-  return redirect(`/lessons/${lesson.id}/checkout`);
-}
+  // create lesson
+  var lesson_id;
+  var result = await createLesson({lesson: lessonData});
+  
+  if (result.error) {
+    console.error("Oh no!", result.error)
+
+    // TODO this doesn't work
+    throw result.error
+  }
+  console.log("Create Lesson result:")
+  console.log(result.data)
+  if (result.data.createLesson) {
+    lesson_id = result.data.createLesson.id
+    console.log("got a lesson_id: "+lesson_id)
+    return redirect(`/lessons/${lesson_id}/checkout`);
+  } else {
+    console.log("BADBADNOTGOOD")
+    throw new Response("Thy flesh consumed")
+  }
+};
 
 function LessonsNew() {
   const [results] = useQuery({
