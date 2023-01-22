@@ -33,3 +33,11 @@ mutation CreateLesson($lesson: LessonInput!) {
     }
   }
 }
+
+mutation UpdateLesson($lesson: LessonInputPartial!) {
+  updateLesson(input: $lesson) {
+    ... on Lesson {
+      id
+    }
+  }
+}

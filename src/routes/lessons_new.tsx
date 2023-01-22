@@ -1,7 +1,7 @@
+import { useQuery } from 'urql';
 import { Form, redirect } from "react-router-dom";
 import { Student } from '../types'
-import { LessonInput } from '../graphql/generated'
-import { GetStudentsDocument } from '../graphql/generated'
+import { GetStudentsDocument, LessonInput } from '../graphql/generated'
 
 export const action = ({createLesson}) => async ({ request, params }) => {
   const formData = await request.formData();
@@ -42,6 +42,11 @@ function LessonsNew() {
   const [results] = useQuery({
     query: GetStudentsDocument
   })
+
+  const { data, fetching, error } = results;
+
+  if (fetching) return <p>Loading...</p>
+  if (error) return <p>Error: {error.toString()}</p>
 
   if (!results.data)
     return <>No Students</>
