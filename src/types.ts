@@ -1,10 +1,10 @@
-import type { GetLessonsQuery } from "./graphql/generated";
+import type { GetLessonQuery } from "./graphql/generated";
 import type { GetSchoolsQuery } from "./graphql/generated";
 import type { GetStudentsQuery } from "./graphql/generated";
 import type { GetUsersQuery } from "./graphql/generated";
 import type { CreateLessonMutation } from "./graphql/generated";
 
-export type Lesson = GetLessonsQuery["lessons"]['0'];
+export type Lesson = GetLessonQuery["lesson"];
 export type LessonInput = CreateLessonMutation["createLesson"];
 export type School = GetSchoolsQuery["schools"]['0'];
 export type Student = GetStudentsQuery["students"]['0'];

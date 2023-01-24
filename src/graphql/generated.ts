@@ -45,11 +45,11 @@ export type LessonInput = {
 export type LessonInputPartial = {
   id: Scalars['ID'];
   notes?: InputMaybe<Scalars['String']>;
-  school: SchoolInputPartial;
-  student: StudentInputPartial;
+  school?: InputMaybe<SchoolInputPartial>;
+  student?: InputMaybe<StudentInputPartial>;
   timeIn?: InputMaybe<Scalars['DateTime']>;
   timeOut?: InputMaybe<Scalars['DateTime']>;
-  user: UserInputPartial;
+  user?: InputMaybe<UserInputPartial>;
 };
 
 export type Mutation = {
@@ -179,7 +179,7 @@ export type StudentInputPartial = {
   firstName?: InputMaybe<Scalars['String']>;
   id: Scalars['ID'];
   lastName?: InputMaybe<Scalars['String']>;
-  school: SchoolInputPartial;
+  school?: InputMaybe<SchoolInputPartial>;
 };
 
 export type UpdateLessonPayload = Lesson | OperationInfo;
