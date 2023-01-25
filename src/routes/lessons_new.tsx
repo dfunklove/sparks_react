@@ -1,5 +1,4 @@
-import { Form, redirect } from "react-router-dom";
-import { useQuery } from 'urql';
+import { Form, redirect, useLoaderData } from "react-router-dom";
 import { Student } from '../types'
 import { CreateLessonDocument, GetStudentsDocument, LessonInput } from '../graphql/generated'
 
@@ -16,32 +15,29 @@ export const action = ({client}) => async ({ request, params }) => {
 
   const result = await client.mutation(CreateLessonDocument, {lesson: lessonData}).toPromise()
   
-  if (result.error) {
-    console.error("Create lesson error", result.error)
-    throw new Error(result.error)
-  }
-  if (result.data.createLesson) {
+  if (result.data?.createLesson || !result.error) {
     const lesson_id = result.data.createLesson.id
     return redirect(`/lessons/${lesson_id}/checkout`);
   } else {
     const message="Unable to create lesson";
     console.log(message, result.error)
-    throw new Response(message, { status: 404, statusText: message})
+    throw new Response(result.error, { status: 404, statusText: message})
   }
 };
 
+export const loader = ({client}) => async ({ request, params }) => {
+  const results = await client.query(GetStudentsDocument).toPromise()
+  const students = results.data?.students || []
+  return {students}
+}
+
 function LessonsNew() {
-  const [results] = useQuery({
-    query: GetStudentsDocument
-  })
+  const {students} = useLoaderData()
 
-  const { data, fetching, error } = results;
+  if (!students?.length) {
+    return <div>No students have been assigned to you.  Please check back later or contact your supervisor.</div>
+  }
 
-  if (fetching) return <p>Loading...</p>
-  if (error) return <p>Error: {error.toString()}</p>
-  if (!data) return <>No Students</>
-
-  var students: Student[] = data.students;
   return <div>
     <h2>Start Single Lesson</h2>
     <div className="stdnt table">

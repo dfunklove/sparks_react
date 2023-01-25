@@ -1,4 +1,4 @@
-import { Form, redirect, useParams } from "react-router-dom";
+import { Form, redirect, useLoaderData, useParams } from "react-router-dom";
 import { useQuery } from 'urql';
 import { Lesson } from '../types'
 import { GetLessonDocument, LessonInputPartial, UpdateLessonDocument } from '../graphql/generated'
@@ -15,35 +15,30 @@ export const action = ({client}) => async ({ request, params }) => {
 
   const result = await client.mutation(UpdateLessonDocument, {lesson: lessonData}).toPromise()
 
-  if (result.error) {
-    console.error("Update lesson error", result.error)
-    throw new Error(result.error)
-  }
-  if (result.data.updateLesson) {
+  if (result.data?.updateLesson || !result.error) {
     return redirect(`/lessons/new`);
   } else {
     const message="Unable to update lesson";
     console.log(message, result.error)
-    throw new Response(message, { status: 404, statusText: message})
+    throw new Response(result.error, { status: 404, statusText: message})
   }
 };
 
-function LessonsCheckout() {
-  const { id } = useParams();
-  const [result] = useQuery({
-    query: GetLessonDocument,
-    variables: { id: id }
-  })
-  const { data, fetching, error } = result;
-
-  if (fetching) return <p>Loading...</p>
-  if (error) return <p>Error: {error.toString()}</p>
-
-  var lesson: Lesson
-  if (!data) {
-    throw new Response("Unable to find lesson", {status: 404, statusText: "Unable to find lesson"})
+export const loader = ({client}) => async ({ request, params }) => {
+  const id = params["id"]
+  const result = await client.query(GetLessonDocument,  {id: id}).toPromise()
+  const lesson = result.data?.lesson
+  if (!lesson) {
+    const message="Unable to find lesson"
+    console.log(message, result.error)
+    throw new Response(message, {status: 404, statusText: message})
   }
-  lesson = data.lesson;
+  return {lesson}
+}
+
+function LessonsCheckout() {
+  const {lesson} = useLoaderData()
+
   return <><h2>Lesson Checkout</h2>
       Lesson id: { lesson.id }, time in: { lesson.timeIn }
 
