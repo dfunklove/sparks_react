@@ -1,9 +1,9 @@
 import { Form, redirect } from "react-router-dom";
 import { useQuery } from 'urql';
 import { Student } from '../types'
-import { GetStudentsDocument, LessonInput } from '../graphql/generated'
+import { CreateLessonDocument, GetStudentsDocument, LessonInput } from '../graphql/generated'
 
-export const action = ({createLesson}) => async ({ request, params }) => {
+export const action = ({client}) => async ({ request, params }) => {
   const formData = await request.formData();
   const school_id = formData.get("school_id");
   const student_id = formData.get("student_id");
@@ -14,13 +14,11 @@ export const action = ({createLesson}) => async ({ request, params }) => {
     user: { id: "1"}
   }
 
-  var result = await createLesson({lesson: lessonData});
+  const result = await client.mutation(CreateLessonDocument, {lesson: lessonData}).toPromise()
   
   if (result.error) {
-    console.error("Oh no!", result.error)
-
-    // TODO this doesn't work
-    throw result.error
+    console.error("Create lesson error", result.error)
+    throw new Error(result.error)
   }
   if (result.data.createLesson) {
     const lesson_id = result.data.createLesson.id

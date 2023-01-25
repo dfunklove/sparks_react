@@ -1,9 +1,9 @@
 import { Form, redirect, useParams } from "react-router-dom";
 import { useQuery } from 'urql';
 import { Lesson } from '../types'
-import { GetLessonDocument, LessonInputPartial } from '../graphql/generated'
+import { GetLessonDocument, LessonInputPartial, UpdateLessonDocument } from '../graphql/generated'
 
-export const action = ({updateLesson}) => async ({ request, params }) => {
+export const action = ({client}) => async ({ request, params }) => {
   const formData = await request.formData();
   const id = formData.get("id");
   const notes = formData.get("notes");
@@ -13,13 +13,11 @@ export const action = ({updateLesson}) => async ({ request, params }) => {
     timeOut: new Date(),
   }
 
-  var result = await updateLesson({lesson: lessonData});
-  
-  if (result.error) {
-    console.error("Oh no!", result.error)
+  const result = await client.mutation(UpdateLessonDocument, {lesson: lessonData}).toPromise()
 
-    // TODO this doesn't work
-    throw result.error
+  if (result.error) {
+    console.error("Update lesson error", result.error)
+    throw new Error(result.error)
   }
   if (result.data.updateLesson) {
     return redirect(`/lessons/new`);

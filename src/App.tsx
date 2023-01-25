@@ -3,15 +3,12 @@ import {
   RouterProvider,
   useRouteError,
 } from "react-router-dom";
-import { useClient, useMutation } from 'urql';
-import { CreateLessonDocument, UpdateLessonDocument } from './graphql/generated'
+import { useClient } from 'urql';
 import Root from "./routes/root";
 import LessonsCheckout, { action as lessonsCheckoutAction } from './routes/lessons_checkout'
 import LessonsNew, { action as lessonsNewAction } from './routes/lessons_new'
 
 function App() {
-  const [createLessonResult, createLesson] = useMutation(CreateLessonDocument);
-  const [updateLessonResult, updateLesson] = useMutation(UpdateLessonDocument);
   const client = useClient()
 
   const router = createBrowserRouter([
@@ -20,9 +17,9 @@ function App() {
       element: <Root />,
       errorElement: <ErrorBoundary />,
       children: [
-        { index: true, element: <LessonsNew />, action: lessonsNewAction({createLesson})},
-        { path: "lessons/:id/checkout", element: <LessonsCheckout />, action: lessonsCheckoutAction({updateLesson}) },
-        { path: "lessons/new", element: <LessonsNew />, action: lessonsNewAction({createLesson}) },
+        { index: true, element: <LessonsNew />, action: lessonsNewAction({client})},
+        { path: "lessons/:id/checkout", element: <LessonsCheckout />, action: lessonsCheckoutAction({client}) },
+        { path: "lessons/new", element: <LessonsNew />, action: lessonsNewAction({client}) },
       ],
     },
   ]);
