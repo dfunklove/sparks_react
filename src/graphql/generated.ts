@@ -21,6 +21,11 @@ export type CreateUserPayload = OperationInfo | User;
 
 export type DeleteLessonPayload = Lesson | OperationInfo;
 
+export type DeleteType = {
+  __typename?: 'DeleteType';
+  deleted: Scalars['Boolean'];
+};
+
 export type DeleteUserPayload = OperationInfo | User;
 
 export type Lesson = {
@@ -57,9 +62,13 @@ export type Mutation = {
   createLesson: CreateLessonPayload;
   createUser: CreateUserPayload;
   deleteLesson: DeleteLessonPayload;
+  deleteTokenCookie: DeleteType;
   deleteUser: DeleteUserPayload;
+  refreshToken: TokenDataType;
+  tokenAuth: TokenDataType;
   updateLesson: UpdateLessonPayload;
   updateUser: UpdateUserPayload;
+  verifyToken: PayloadType;
 };
 
 
@@ -83,6 +92,18 @@ export type MutationDeleteUserArgs = {
 };
 
 
+export type MutationRefreshTokenArgs = {
+  token?: InputMaybe<Scalars['String']>;
+};
+
+
+export type MutationTokenAuthArgs = {
+  email: Scalars['String'];
+  password: Scalars['String'];
+  token?: InputMaybe<Scalars['String']>;
+};
+
+
 export type MutationUpdateLessonArgs = {
   input: LessonInputPartial;
 };
@@ -90,6 +111,11 @@ export type MutationUpdateLessonArgs = {
 
 export type MutationUpdateUserArgs = {
   input: UserInputPartial;
+};
+
+
+export type MutationVerifyTokenArgs = {
+  token: Scalars['String'];
 };
 
 /** Input of an object that implements the `Node` interface. */
@@ -123,6 +149,11 @@ export enum OperationMessageKind {
   Validation = 'VALIDATION',
   Warning = 'WARNING'
 }
+
+export type PayloadType = {
+  __typename?: 'PayloadType';
+  payload: TokenPayloadType;
+};
 
 export type Query = {
   __typename?: 'Query';
@@ -182,6 +213,21 @@ export type StudentInputPartial = {
   school?: InputMaybe<SchoolInputPartial>;
 };
 
+export type TokenDataType = {
+  __typename?: 'TokenDataType';
+  payload: TokenPayloadType;
+  refreshExpiresIn?: Maybe<Scalars['Int']>;
+  refreshToken?: Maybe<Scalars['String']>;
+  token: Scalars['String'];
+};
+
+export type TokenPayloadType = {
+  __typename?: 'TokenPayloadType';
+  email: Scalars['String'];
+  exp: Scalars['Int'];
+  origIat: Scalars['Int'];
+};
+
 export type UpdateLessonPayload = Lesson | OperationInfo;
 
 export type UpdateUserPayload = OperationInfo | User;
@@ -192,14 +238,14 @@ export type User = {
   firstName: Scalars['String'];
   id: Scalars['ID'];
   lastName: Scalars['String'];
-  passwordDigest: Scalars['String'];
+  password: Scalars['String'];
 };
 
 export type UserInput = {
   email: Scalars['String'];
-  firstName: Scalars['String'];
-  lastName: Scalars['String'];
-  passwordDigest: Scalars['String'];
+  firstName?: InputMaybe<Scalars['String']>;
+  lastName?: InputMaybe<Scalars['String']>;
+  password: Scalars['String'];
 };
 
 export type UserInputPartial = {
@@ -207,7 +253,7 @@ export type UserInputPartial = {
   firstName?: InputMaybe<Scalars['String']>;
   id: Scalars['ID'];
   lastName?: InputMaybe<Scalars['String']>;
-  passwordDigest?: InputMaybe<Scalars['String']>;
+  password?: InputMaybe<Scalars['String']>;
 };
 
 export type GetLessonQueryVariables = Exact<{
@@ -246,6 +292,14 @@ export type GetStudentsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetStudentsQuery = { __typename?: 'Query', students: Array<{ __typename?: 'Student', id: string, firstName: string, lastName: string, school: { __typename?: 'School', id: string, name: string } }> };
 
+export type TokenAuthMutationVariables = Exact<{
+  email: Scalars['String'];
+  password: Scalars['String'];
+}>;
+
+
+export type TokenAuthMutation = { __typename?: 'Mutation', tokenAuth: { __typename?: 'TokenDataType', token: string } };
+
 export type GetUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -258,4 +312,5 @@ export const CreateLessonDocument = {"kind":"Document","definitions":[{"kind":"O
 export const UpdateLessonDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateLesson"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"lesson"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"LessonInputPartial"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateLesson"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"lesson"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Lesson"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<UpdateLessonMutation, UpdateLessonMutationVariables>;
 export const GetSchoolsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetSchools"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"schools"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]} as unknown as DocumentNode<GetSchoolsQuery, GetSchoolsQueryVariables>;
 export const GetStudentsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetStudents"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"students"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"school"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<GetStudentsQuery, GetStudentsQueryVariables>;
+export const TokenAuthDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"TokenAuth"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"email"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"password"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"tokenAuth"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"email"},"value":{"kind":"Variable","name":{"kind":"Name","value":"email"}}},{"kind":"Argument","name":{"kind":"Name","value":"password"},"value":{"kind":"Variable","name":{"kind":"Name","value":"password"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"token"}}]}}]}}]} as unknown as DocumentNode<TokenAuthMutation, TokenAuthMutationVariables>;
 export const GetUsersDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetUsers"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"users"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<GetUsersQuery, GetUsersQueryVariables>;
