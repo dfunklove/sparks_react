@@ -30,7 +30,7 @@ function Login() {
       <label htmlFor="email">Email</label>
       <input id="email" name="email"/>
       <label htmlFor="password">Password</label>
-      <input id="password" name="password"/>
+      <input id="password" name="password" type="password"/>
       <button type="submit">Log in</button>
     </Form>
   </div>
