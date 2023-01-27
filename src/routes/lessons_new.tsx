@@ -1,16 +1,18 @@
 import { Form, redirect, useLoaderData } from "react-router-dom";
 import { Student } from '../types'
 import { CreateLessonDocument, GetStudentsDocument, LessonInput } from '../graphql/generated'
+import { getUser } from '../storage'
 
 export const action = ({client}) => async ({ request, params }) => {
   const formData = await request.formData();
   const school_id = formData.get("school_id");
   const student_id = formData.get("student_id");
+  const user_id = getUser().id
   const lessonData: LessonInput = { 
     school: { id: school_id }, 
     student: { id: student_id, school: { id: school_id } },
     timeIn: new Date(),
-    user: { id: "1"}
+    user: { id: user_id}
   }
 
   const result = await client.mutation(CreateLessonDocument, {lesson: lessonData}).toPromise()

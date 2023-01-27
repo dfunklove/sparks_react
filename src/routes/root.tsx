@@ -1,5 +1,5 @@
 import { Link, Outlet, useNavigate } from "react-router-dom";
-import { deleteToken, getToken } from "../token";
+import { deleteToken, deleteUser, getToken } from "../storage";
 
 export default function Root() {
   const navigate = useNavigate()
@@ -12,6 +12,7 @@ export default function Root() {
           <li><a href="#"
             onClick={() => {
               deleteToken()
+              deleteUser()
               navigate(`/login`);
             }}
           >

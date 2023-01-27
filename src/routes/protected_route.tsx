@@ -1,5 +1,5 @@
 import { Navigate } from "react-router-dom";
-import { getToken } from "../token";
+import { getToken } from "../storage";
 
 const ProtectedRoute = ({ children }) => {
   const token = getToken();

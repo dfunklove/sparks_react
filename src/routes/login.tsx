@@ -1,6 +1,6 @@
 import { Form, redirect } from "react-router-dom";
-import { TokenAuthDocument } from "../graphql/generated"
-import { setToken } from "../token";
+import { GetUserDocument, TokenAuthDocument } from "../graphql/generated"
+import { setToken, setUser } from "../storage";
 
 
 export const action = ({client}) => async ({ request, params }) => {
@@ -8,10 +8,18 @@ export const action = ({client}) => async ({ request, params }) => {
   const email = formData.get("email");
   const password = formData.get("password");
 
-  const result = await client.mutation(TokenAuthDocument, {email: email, password: password}).toPromise()
+  var result = await client.mutation(TokenAuthDocument, {email: email, password: password}).toPromise()
   if (result.data?.tokenAuth?.token && !result.error) {
     const token = result.data.tokenAuth.token
     setToken(token)
+
+    result = await client.query(GetUserDocument).toPromise()
+    console.log("result of getCurrentUser", result)
+    if (result.data?.user && !result.error) {
+      const user = result.data.user
+      setUser(user)
+    }
+
     return redirect(`/`);
   } else {
     const message="Unable to login";
