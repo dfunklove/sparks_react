@@ -15,7 +15,7 @@ export const action = ({client}) => async ({ request, params }) => {
 
   const result = await client.mutation(UpdateLessonDocument, {lesson: lessonData}).toPromise()
 
-  if (result.data?.updateLesson || !result.error) {
+  if (result.data?.updateLesson && !result.error) {
     return redirect(`/lessons/new`);
   } else {
     const message="Unable to update lesson";

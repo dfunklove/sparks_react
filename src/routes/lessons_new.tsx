@@ -10,14 +10,14 @@ export const action = ({client}) => async ({ request, params }) => {
   const user_id = getUser().id
   const lessonData: LessonInput = { 
     school: { id: school_id }, 
-    student: { id: student_id, school: { id: school_id } },
+    student: { id: student_id },
     timeIn: new Date(),
     user: { id: user_id}
   }
 
   const result = await client.mutation(CreateLessonDocument, {lesson: lessonData}).toPromise()
   
-  if (result.data?.createLesson || !result.error) {
+  if (result.data?.createLesson?.id && !result.error) {
     const lesson_id = result.data.createLesson.id
     return redirect(`/lessons/${lesson_id}/checkout`);
   } else {
