@@ -28,9 +28,16 @@ export type DeleteType = {
 
 export type DeleteUserPayload = OperationInfo | User;
 
+export type Goal = {
+  __typename?: 'Goal';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+};
+
 export type Lesson = {
   __typename?: 'Lesson';
   id: Scalars['ID'];
+  ratingSet: Array<Rating>;
   school: School;
   student: Student;
   timeIn: Scalars['DateTime'];
@@ -50,6 +57,7 @@ export type LessonInput = {
 export type LessonInputPartial = {
   id: Scalars['ID'];
   notes?: InputMaybe<Scalars['String']>;
+  ratingSet?: InputMaybe<Array<RatingInputPartial>>;
   school?: InputMaybe<SchoolInputPartial>;
   student?: InputMaybe<StudentInputPartial>;
   timeIn?: InputMaybe<Scalars['DateTime']>;
@@ -188,6 +196,21 @@ export type QueryUserArgs = {
   id?: InputMaybe<Scalars['ID']>;
 };
 
+export type Rating = {
+  __typename?: 'Rating';
+  goal: Goal;
+  id: Scalars['ID'];
+  lesson: Lesson;
+  score: Scalars['Int'];
+};
+
+export type RatingInputPartial = {
+  goalId: Scalars['ID'];
+  id?: InputMaybe<Scalars['GlobalID']>;
+  lessonId: Scalars['ID'];
+  score?: InputMaybe<Scalars['Int']>;
+};
+
 export type School = {
   __typename?: 'School';
   id: Scalars['ID'];
@@ -202,6 +225,7 @@ export type SchoolInputPartial = {
 export type Student = {
   __typename?: 'Student';
   firstName: Scalars['String'];
+  goals: Array<Goal>;
   id: Scalars['ID'];
   lastName: Scalars['String'];
   school: School;
