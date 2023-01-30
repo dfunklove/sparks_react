@@ -8,10 +8,20 @@ export const action = ({client}) => async ({ request, params }) => {
   const formData = await request.formData();
   const id = formData.get("id");
   const notes = formData.get("notes");
+  const ratings = []
+  for (let i=0; i < MAX_GOALS_PER_STUDENT; i++) {
+    let goalId = formData.get(`rating${i}_goalId`)
+    if (goalId?.length) {
+      let score = parseInt(formData.get(`rating${i}_score`))
+      ratings.push({goalId: goalId, score: score})
+    }
+  }
+
   const lessonData: LessonInputPartial = { 
     id: id,
     notes: notes,
     timeOut: new Date(),
+    ratingSet: ratings,
   }
 
   const result = await client.mutation(UpdateLessonDocument, {lesson: lessonData}).toPromise()
@@ -45,7 +55,7 @@ function LessonsCheckout() {
   while (student_goals.length < MAX_GOALS_PER_STUDENT) {
     student_goals.push({})
   }
-  var select_index = 0
+  const rating_scale = Array(10).fill().map((element, index) => index + 1)
 
   return <><h2>Lesson Checkout</h2>
       Lesson id: { lesson.id }, time in: { lesson.timeIn }
@@ -53,11 +63,15 @@ function LessonsCheckout() {
       <Form method="post">
         <input type="hidden" id="id" name="id" value={lesson.id}></input>
         <label>Goals</label>
-        { student_goals.map((sg) => 
+        { student_goals.map((sg, index) => 
           <div className="all-inline">
-          <select name={`goal${select_index++}`} value={sg.id}>
+          <select name={`rating${index}_goalId`} value={sg.id}>
             <option value="">[None]</option>
             { goals.map((goal) => <option value={goal.id}>{goal.name}</option>) }
+          </select>
+          <select name={`rating${index}_score`}>
+            <option value=""></option>
+            { rating_scale.map((val) => <option value={val}>{val}</option>)}
           </select>
           </div>
         )}
