@@ -1,0 +1,6 @@
+query GetGoals {
+  goals {
+    id
+    name
+  }
+}

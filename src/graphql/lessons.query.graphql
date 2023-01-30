@@ -7,6 +7,10 @@ query GetLesson($id: ID!) {
     }
     student {
       id
+      goals {
+        id
+        name
+      }
       firstName
       lastName
     }
@@ -35,7 +39,7 @@ mutation CreateLesson($lesson: LessonInput!) {
 }
 
 mutation UpdateLesson($lesson: LessonInputPartial!) {
-  updateLesson(input: $lesson) {
+  updateLesson(input: {input: $lesson}) {
     ... on Lesson {
       id
     }
