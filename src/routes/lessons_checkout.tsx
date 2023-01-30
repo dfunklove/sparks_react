@@ -65,7 +65,7 @@ function LessonsCheckout() {
         <label>Goals</label>
         { student_goals.map((sg, index) => 
           <div className="all-inline">
-          <select name={`rating${index}_goalId`} value={sg.id}>
+          <select name={`rating${index}_goalId`} defaultValue={sg.id}>
             <option value="">[None]</option>
             { goals.map((goal) => <option value={goal.id}>{goal.name}</option>) }
           </select>
