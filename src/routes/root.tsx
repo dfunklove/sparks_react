@@ -7,7 +7,8 @@ export default function Root() {
     <>
       <div className="navBar">
         <ul>
-          <li><Link to={`lessons/new`}>New Lesson</Link></li>
+          <li><Link to={`lessons/new`}>Single Lesson</Link></li>
+          <li><Link to={`group_lessons/new`}>Group Lesson</Link></li>
         { getToken() &&
           <li><a href="#"
             onClick={() => {

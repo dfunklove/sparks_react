@@ -1,0 +1,52 @@
+query GetGroupLesson($id: ID!) {
+  groupLesson(pk: $id) {
+    id
+    lessonSet {
+      id
+      notes
+      ratingSet {
+        goal {
+          id
+          name
+        }
+        score
+      }
+      school {
+        id
+        name
+      }
+      student {
+        id
+        firstName
+        lastName
+        goals {
+          id
+          name
+        }
+      }
+    }
+    timeIn
+    timeOut
+    user {
+      id
+      firstName
+      lastName
+    }
+  }
+}
+
+mutation CreateGroupLesson($studentIds: [ID!]!, $userId: ID!) {
+  createGroupLesson(input: {studentIds: $studentIds, userId: $userId}) {
+    ... on GroupLesson {
+      id
+    }
+  }
+}
+
+mutation UpdateGroupLesson($lesson: GroupLessonInputPartial!) {
+  updateGroupLesson(input: {input: $lesson}) {
+    ... on GroupLesson {
+      id
+    }
+  }
+}

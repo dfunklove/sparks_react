@@ -7,6 +7,8 @@ import { useClient } from 'urql';
 import Login from "./routes/login"
 import ProtectedRoute from "./routes/protected_route";
 import Root from "./routes/root";
+import GroupLessonsCheckout, { action as groupLessonsCheckoutAction, loader as groupLessonsCheckoutLoader } from './routes/group_lessons_checkout'
+import GroupLessonsNew, { action as groupLessonsNewAction, loader as groupLessonsNewLoader } from './routes/group_lessons_new'
 import LessonsCheckout, { action as lessonsCheckoutAction, loader as lessonsCheckoutLoader } from './routes/lessons_checkout'
 import LessonsNew, { action as lessonsNewAction, loader as lessonsNewLoader } from './routes/lessons_new'
 import { action as loginAction } from "./routes/login"
@@ -23,6 +25,8 @@ function App() {
         { index: true, element: <LessonsNew />, action: lessonsNewAction({client}), loader: lessonsNewLoader({client})},
         { path: "lessons/:id/checkout", element: <LessonsCheckout />, action: lessonsCheckoutAction({client}), loader: lessonsCheckoutLoader({client}) },
         { path: "lessons/new", element: <LessonsNew />, action: lessonsNewAction({client}), loader: lessonsNewLoader({client}) },
+        { path: "group_lessons/new", element: <GroupLessonsNew />, action: groupLessonsNewAction({client}), loader: groupLessonsNewLoader({client}) },
+        { path: "group_lessons/:id/checkout", element: <GroupLessonsCheckout />, action: groupLessonsCheckoutAction({client}), loader: groupLessonsCheckoutLoader({client}) },
       ],
     },
     {
