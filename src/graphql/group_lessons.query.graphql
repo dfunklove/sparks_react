@@ -43,8 +43,8 @@ mutation CreateGroupLesson($studentIds: [ID!]!, $userId: ID!) {
   }
 }
 
-mutation UpdateGroupLesson($lesson: GroupLessonInputPartial!) {
-  updateGroupLesson(input: {input: $lesson}) {
+mutation UpdateGroupLesson($groupLesson: GroupLessonInputPartial!) {
+  updateGroupLesson(input: {input: $groupLesson}) {
     ... on GroupLesson {
       id
     }
