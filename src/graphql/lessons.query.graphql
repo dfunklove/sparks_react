@@ -1,6 +1,14 @@
 query GetLesson($id: ID!) {
   lesson(pk: $id) {
     id
+    notes
+    ratingSet {
+      goal {
+        id
+        name
+      }
+      score
+    }
     school {
       id
       name
@@ -27,6 +35,34 @@ query GetLesson($id: ID!) {
 query GetLessons {
   lessons {
     id
+    notes
+    ratingSet {
+      goal {
+        id
+        name
+      }
+      score
+    }
+    school {
+      id
+      name
+    }
+    student {
+      id
+      goals {
+        id
+        name
+      }
+      firstName
+      lastName
+    }
+    timeIn
+    timeOut
+    user {
+      id
+      firstName
+      lastName
+    }
   }
 }
 

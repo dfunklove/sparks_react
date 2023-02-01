@@ -9,6 +9,7 @@ export default function Root() {
         <ul>
           <li><Link to={`lessons/new`}>Single Lesson</Link></li>
           <li><Link to={`group_lessons/new`}>Group Lesson</Link></li>
+          <li><Link to={`lessons`}>My Lessons</Link></li>
         { getToken() &&
           <li><a href="#"
             onClick={() => {
