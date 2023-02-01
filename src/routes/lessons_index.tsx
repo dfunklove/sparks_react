@@ -1,15 +1,17 @@
 import { useLoaderData } from "react-router-dom";
-import { GetLessonsDocument } from '../graphql/generated'
+import { Client } from 'urql';
+import { GetLessonsDocument, Lesson, Rating } from '../graphql/generated'
 
-export const loader = ({client}) => async ({ request, params }) => {
-  var result = await client.query(GetLessonsDocument).toPromise()
+export const loader = ({client}: {client: Client}) => async ({ request, params}: {request: any, params: any}) => {
+  console.log("client", client.constructor.name)
+  var result = await client.query(GetLessonsDocument,{}).toPromise()
   const lessons = result.data?.lessons || []
   return {lessons}
 }
 const MAX_GOALS_PER_STUDENT = 3
 
 function LessonsIndex() {
-  const {lessons} = useLoaderData()
+  const {lessons} = useLoaderData() as {lessons: [Lesson]}
 
   if (!lessons?.length) {
     return <div>No students have been assigned to you.  Please check back later or contact your supervisor.</div>
@@ -41,7 +43,7 @@ function LessonsIndex() {
         console.log("lesson", lesson)
         var ratings = lesson.ratingSet
         while (ratings.length < MAX_GOALS_PER_STUDENT) {
-          ratings.push({})
+          ratings.push({} as Rating)
         }
 
         return <div className="tr">
@@ -50,7 +52,7 @@ function LessonsIndex() {
           <span className="td">{lesson.student.firstName + " " + lesson.student.lastName}</span>        
           <span className="td">{lesson.timeOut && new Date(lesson.timeOut).toLocaleDateString('en-us', { year:"numeric", month:"short", day:"numeric"}) }</span>
           <span className="td">{lesson.timeOut && new Date(lesson.timeOut).toLocaleTimeString('en-us', { hour: 'numeric', minute: 'numeric', second: 'numeric',})}</span>
-          <span className="td">{lesson.timeIn && lesson.timeOut && ((new Date(lesson.timeOut)-new Date(lesson.timeIn))/(60*1000)).toFixed()}</span>
+          <span className="td">{lesson.timeIn && lesson.timeOut && ((new Date(lesson.timeOut).valueOf()-new Date(lesson.timeIn).valueOf())/(60*1000)).toFixed()}</span>
           { ratings.map((rating, index) => <>
             <span className="td">
               {rating.goal?.name}

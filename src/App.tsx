@@ -3,7 +3,7 @@ import {
   RouterProvider,
   useRouteError,
 } from "react-router-dom";
-import { useClient } from 'urql';
+import { Client, useClient } from 'urql';
 import Login from "./routes/login"
 import ProtectedRoute from "./routes/protected_route";
 import Root from "./routes/root";
@@ -15,7 +15,7 @@ import LessonsNew, { action as lessonsNewAction, loader as lessonsNewLoader } fr
 import { action as loginAction } from "./routes/login"
 
 function App() {
-  const client = useClient()
+  const client: Client = useClient()
 
   const router = createBrowserRouter([
     {
@@ -40,7 +40,7 @@ function App() {
   ]);
   
   function ErrorBoundary() {
-    let error = useRouteError();
+    let error: any = useRouteError();
     console.error("THIS IS THE BOUNDARY", error)
     return <div id="error-page">
       <h1>Oops!</h1>

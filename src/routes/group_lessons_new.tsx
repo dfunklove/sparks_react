@@ -1,9 +1,9 @@
 import { Form, redirect, useLoaderData } from "react-router-dom";
-import { Student } from '../types'
-import { CreateGroupLessonDocument, GetStudentsDocument, LessonInput } from '../graphql/generated'
+import { Client } from "urql";
+import { CreateGroupLessonDocument, GetStudentsDocument, GroupLesson, Student } from '../graphql/generated'
 import { getUser } from '../storage'
 
-export const action = ({client}) => async ({ request, params }) => {
+export const action = ({client}: {client: Client}) => async ({ request, params }: {request: any, params: any}) => {
   const formData = await request.formData();
   const student_count = parseInt(formData.get("student_count"));
   const student_ids = []
@@ -16,34 +16,35 @@ export const action = ({client}) => async ({ request, params }) => {
   }
 
   const result = await client.mutation(CreateGroupLessonDocument, {userId: getUser().id, studentIds: student_ids}).toPromise()
-  
-  if (result.data?.createGroupLesson?.id && !result.error) {
-    const lesson_id = result.data.createGroupLesson.id
+  const resultData = result.data?.createGroupLesson as GroupLesson
+  if (resultData?.id && !result.error) {
+    const lesson_id = resultData.id
     return redirect(`/group_lessons/${lesson_id}/checkout`);
   } else {
     const message="Unable to create lesson";
     console.log(message, result.error)
-    throw new Response(result.error, { status: 404, statusText: message})
+    throw new Response(result.error as any, { status: 404, statusText: message})
   }
 };
 
-export const loader = ({client}) => async ({ request, params }) => {
-  const results = await client.query(GetStudentsDocument).toPromise()
+export const loader = ({client}: {client: Client}) => async ({ request, params }: {request: any, params: any}) => {
+  const results = await client.query(GetStudentsDocument,{}).toPromise()
   const students = results.data?.students || []
   return {students}
 }
 
-function tally(e) {
-  let val = parseInt(document.getElementById("student_count").value);
+function tally(e: any) {
+  const student_count = document.getElementById("student_count") as HTMLInputElement
+  let val = parseInt(student_count.value);
   if (e.target.checked)
     val++
   else
     val--
-  document.getElementById("student_count").value = val
+    student_count.value = val.toString()
 }
 
 function GroupLessonsNew() {
-  const {students} = useLoaderData()
+  const {students} = useLoaderData() as {students: [Student]}
 
   if (!students?.length) {
     return <div>No students have been assigned to you.  Please check back later or contact your supervisor.</div>

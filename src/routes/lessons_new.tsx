@@ -1,9 +1,9 @@
 import { Form, redirect, useLoaderData } from "react-router-dom";
-import { Student } from '../types'
-import { CreateLessonDocument, GetStudentsDocument, LessonInput } from '../graphql/generated'
+import { Client } from "urql";
+import { CreateLessonDocument, GetStudentsDocument, Lesson, LessonInput, Student } from '../graphql/generated'
 import { getUser } from '../storage'
 
-export const action = ({client}) => async ({ request, params }) => {
+export const action = ({client}: {client: Client}) => async ({ request, params }: {request: any, params: any}) => {
   const formData = await request.formData();
   const school_id = formData.get("school_id");
   const student_id = formData.get("student_id");
@@ -16,25 +16,25 @@ export const action = ({client}) => async ({ request, params }) => {
   }
 
   const result = await client.mutation(CreateLessonDocument, {lesson: lessonData}).toPromise()
-  
-  if (result.data?.createLesson?.id && !result.error) {
-    const lesson_id = result.data.createLesson.id
+  const resultData = result.data?.createLesson as Lesson
+  if (resultData?.id && !result.error) {
+    const lesson_id = resultData.id
     return redirect(`/lessons/${lesson_id}/checkout`);
   } else {
     const message="Unable to create lesson";
     console.log(message, result.error)
-    throw new Response(result.error, { status: 404, statusText: message})
+    throw new Response(result.error as any, { status: 404, statusText: message})
   }
 };
 
-export const loader = ({client}) => async ({ request, params }) => {
-  const results = await client.query(GetStudentsDocument).toPromise()
+export const loader = ({client}: {client: Client}) => async ({ request, params }: {request: any, params: any}) => {
+  const results = await client.query(GetStudentsDocument,{}).toPromise()
   const students = results.data?.students || []
   return {students}
 }
 
 function LessonsNew() {
-  const {students} = useLoaderData()
+  const {students} = useLoaderData() as {students: [Student]}
 
   if (!students?.length) {
     return <div>No students have been assigned to you.  Please check back later or contact your supervisor.</div>

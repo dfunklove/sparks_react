@@ -1,22 +1,22 @@
 import { Form, redirect } from "react-router-dom";
+import { Client } from "urql";
 import { GetUserDocument, TokenAuthDocument } from "../graphql/generated"
 import { setToken, setUser } from "../storage";
 
 
-export const action = ({client}) => async ({ request, params }) => {
+export const action = ({client}: {client: Client}) => async ({ request, params }: {request: any, params: any}) => {
   const formData = await request.formData();
   const email = formData.get("email");
   const password = formData.get("password");
 
-  var result = await client.mutation(TokenAuthDocument, {email: email, password: password}).toPromise()
+  const result = await client.mutation(TokenAuthDocument, {email: email, password: password}).toPromise()
   if (result.data?.tokenAuth?.token && !result.error) {
     const token = result.data.tokenAuth.token
     setToken(token)
 
-    result = await client.query(GetUserDocument).toPromise()
-    console.log("result of getCurrentUser", result)
-    if (result.data?.user && !result.error) {
-      const user = result.data.user
+    const result2 = await client.query(GetUserDocument,{}).toPromise()
+    if (result2.data?.user && !result2.error) {
+      const user = result2.data.user
       setUser(user)
     }
 
@@ -24,7 +24,7 @@ export const action = ({client}) => async ({ request, params }) => {
   } else {
     const message="Unable to login";
     console.log(message, result.error)
-    throw new Response(result.error, { status: 401, statusText: message})
+    throw new Response(result.error as any, { status: 401, statusText: message})
   }
 }
 

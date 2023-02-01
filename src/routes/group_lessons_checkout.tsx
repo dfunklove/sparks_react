@@ -1,10 +1,9 @@
 import { Form, redirect, useLoaderData, useParams } from "react-router-dom";
-import { useQuery } from 'urql';
-import { Lesson } from '../types'
-import { GetGoalsDocument, GetGroupLessonDocument, GroupLessonInputPartial, LessonInputPartial, UpdateGroupLessonDocument } from '../graphql/generated'
+import { Client } from "urql";
+import { GetGoalsDocument, GetGroupLessonDocument, GroupLessonInputPartial, Goal, GroupLesson, LessonInputPartial, UpdateGroupLessonDocument } from '../graphql/generated'
 const MAX_GOALS_PER_STUDENT = 3
 
-export const action = ({client}) => async ({ request, params }) => {
+export const action = ({client}: {client: Client}) => async ({ request, params }: {request: any, params: any}) => {
   const formData = await request.formData();
   console.log("formData", formData)
   const id = formData.get("id");
@@ -13,7 +12,7 @@ export const action = ({client}) => async ({ request, params }) => {
   const student_count = parseInt(formData.get("student_count"));
   const lessons: LessonInputPartial[] = []
   for (let s=0; s < student_count; s++) {
-    const lesson: LessonInputPartial = {}
+    const lesson: LessonInputPartial = {id:"0"}
     lesson.id = formData.get(`student_${s}_id`)
     lesson.notes = formData.get(`student_${s}_notes`)
     lesson.ratingSet = []
@@ -42,27 +41,27 @@ export const action = ({client}) => async ({ request, params }) => {
   } else {
     const message="Unable to update lesson";
     console.log(message, result.error)
-    throw new Response(result.error, { status: 404, statusText: message})
+    throw new Response(result.error as any, { status: 404, statusText: message})
   }
 };
 
-export const loader = ({client}) => async ({ request, params }) => {
+export const loader = ({client}: {client: Client}) => async ({ request, params }: {request: any, params: any}) => {
   const id = params["id"]
-  var result = await client.query(GetGroupLessonDocument,  {id: id}).toPromise()
+  const result = await client.query(GetGroupLessonDocument,  {id: id}).toPromise()
   const group_lesson = result.data?.groupLesson
   if (!group_lesson) {
     const message="Unable to find lesson"
     console.log(message, result.error)
     throw new Response(message, {status: 404, statusText: message})
   }
-  result = await client.query(GetGoalsDocument).toPromise()
-  const goals = result.data?.goals || []
+  const result2 = await client.query(GetGoalsDocument,{}).toPromise()
+  const goals = result2.data?.goals || []
   return {goals, group_lesson}
 }
 
 function GroupLessonsCheckout() {
-  const {goals, group_lesson} = useLoaderData()
-  const rating_scale = Array(10).fill().map((element, index) => index + 1)
+  const {goals, group_lesson} = useLoaderData() as {goals: [Goal], group_lesson: GroupLesson}
+  const rating_scale = Array(10).fill(0).map((element, index) => index + 1)
 
   return <><h2>Lesson Checkout</h2>
       Lesson id: { group_lesson.id }, time in: { group_lesson.timeIn }
@@ -85,7 +84,7 @@ function GroupLessonsCheckout() {
         {group_lesson.lessonSet.map((lesson, i) => {
           var student_goals = lesson.student.goals
           while (student_goals.length < MAX_GOALS_PER_STUDENT) {
-            student_goals.push({})
+            student_goals.push({} as any)
           }
           return <div className="tr">
             <input type="hidden" name={`student_${i}_id`} value={lesson.id}></input>
