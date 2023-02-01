@@ -1,6 +1,4 @@
-import { Form, redirect, useLoaderData, useParams } from "react-router-dom";
-import { useQuery } from 'urql';
-import { Lesson } from '../types'
+import { Form, redirect, useLoaderData } from "react-router-dom";
 import { GetGoalsDocument, GetLessonDocument, LessonInputPartial, UpdateLessonDocument } from '../graphql/generated'
 const MAX_GOALS_PER_STUDENT = 3
 
