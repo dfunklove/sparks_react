@@ -13,6 +13,7 @@ import LessonsCheckout, { action as lessonsCheckoutAction, loader as lessonsChec
 import LessonsIndex, { loader as lessonsIndexLoader } from './routes/lessons_index'
 import LessonsNew, { action as lessonsNewAction, loader as lessonsNewLoader } from './routes/lessons_new'
 import { action as loginAction } from "./routes/login"
+const BASE_PATH = "/sparks-react"
 
 function App() {
   const client: Client = useClient()
@@ -37,7 +38,8 @@ function App() {
       errorElement: <ErrorBoundary />,
       action: loginAction({client}),
     }
-  ]);
+  ],
+  { basename: BASE_PATH });
   
   function ErrorBoundary() {
     let error: any = useRouteError();
