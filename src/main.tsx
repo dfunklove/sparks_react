@@ -6,7 +6,7 @@ import './App.css'
 import { getToken } from './storage'
 
 const client = createClient({
-  url: import.meta.env.VITE_API_URL || 'http://localhost:8000/graphql',
+  url: import.meta.env.VITE_API_URL || '/graphql',
   fetchOptions: () => {
     const token = getToken()
     return {
