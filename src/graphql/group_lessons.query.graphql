@@ -35,6 +35,12 @@ query GetGroupLesson($id: ID!) {
   }
 }
 
+query OpenGroupLesson($userId: ID!) {
+  openGroupLesson(userId: $userId) {
+    id
+  }
+}
+
 mutation CreateGroupLesson($studentIds: [ID!]!, $userId: ID!) {
   createGroupLesson(input: {studentIds: $studentIds, userId: $userId}) {
     ... on GroupLesson {

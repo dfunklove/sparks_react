@@ -1,9 +1,16 @@
 import { Form, redirect, useLoaderData } from "react-router-dom";
 import { Client } from "urql";
-import { CreateGroupLessonDocument, GetStudentsDocument, GroupLesson, Student } from '../graphql/generated'
+import { CreateGroupLessonDocument, GetStudentsDocument, GroupLesson, OpenGroupLessonDocument, Student } from '../graphql/generated'
 import { getUser } from '../storage'
 
 export const action = ({client}: {client: Client}) => async ({ request, params }: {request: any, params: any}) => {
+  const result = await client.query(OpenGroupLessonDocument,{userId: getUser()?.id}).toPromise()
+  console.log("result.data", result.data)
+  if (result.data?.openGroupLesson?.id) {
+    const lesson_id = result.data?.openGroupLesson?.id;
+    return redirect(`/group_lessons/${lesson_id}/checkout?remind=true`);
+  }
+
   const formData = await request.formData();
   const student_count = parseInt(formData.get("student_count"));
   const student_ids = []
@@ -15,15 +22,15 @@ export const action = ({client}: {client: Client}) => async ({ request, params }
     }
   }
 
-  const result = await client.mutation(CreateGroupLessonDocument, {userId: getUser().id, studentIds: student_ids}).toPromise()
-  const resultData = result.data?.createGroupLesson as GroupLesson
-  if (resultData?.id && !result.error) {
+  const result2 = await client.mutation(CreateGroupLessonDocument, {userId: getUser().id, studentIds: student_ids}).toPromise()
+  const resultData = result2.data?.createGroupLesson as GroupLesson
+  if (resultData?.id && !result2.error) {
     const lesson_id = resultData.id
     return redirect(`/group_lessons/${lesson_id}/checkout`);
   } else {
     const message="Unable to create lesson";
-    console.log(message, result.error)
-    throw new Response(result.error as any, { status: 404, statusText: message})
+    console.log(message, result2.error)
+    throw new Response(result2.error as any, { status: 404, statusText: message})
   }
 };
 

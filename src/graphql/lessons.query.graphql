@@ -66,6 +66,12 @@ query GetLessons {
   }
 }
 
+query OpenLesson($userId: ID!) {
+  openLesson(userId: $userId) {
+    id
+  }
+}
+
 mutation CreateLesson($lesson: LessonInput!) {
   createLesson(input: $lesson) {
     ... on Lesson {

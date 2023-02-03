@@ -36,6 +36,11 @@ export const action = ({client}: {client: Client}) => async ({ request, params }
 
 export const loader = ({client}: {client: Client}) => async ({ request, params }: {request: any, params: any}) => {
   const id = params["id"]
+  var flash = ""
+  const searchParams = new URLSearchParams(request.url.split('?')[1])
+  if (searchParams?.get("remind"))
+    flash = "Please finish open lesson before starting a new one"
+  
   const result = await client.query(GetLessonDocument,  {id: id}).toPromise()
   const lesson = result.data?.lesson
   if (!lesson) {
@@ -45,11 +50,11 @@ export const loader = ({client}: {client: Client}) => async ({ request, params }
   }
   const result2 = await client.query(GetGoalsDocument,{}).toPromise()
   const goals = result2.data?.goals || []
-  return {goals, lesson}
+  return {flash, goals, lesson}
 }
 
 function LessonsCheckout() {
-  const {goals, lesson} = useLoaderData() as {goals: [Goal], lesson: Lesson}
+  const {flash, goals, lesson} = useLoaderData() as {flash: string, goals: [Goal], lesson: Lesson}
   var student_goals = lesson.student.goals
   while (student_goals.length < MAX_GOALS_PER_STUDENT) {
     student_goals.push({} as any)
@@ -57,7 +62,8 @@ function LessonsCheckout() {
   const rating_scale = Array(10).fill(0).map((element, index) => index + 1)
 
   return <><h2>Lesson Checkout</h2>
-      Lesson id: { lesson.id }, time in: { lesson.timeIn }
+      <p>Lesson id: { lesson.id }, time in: { lesson.timeIn }</p>
+      <div id="flash"><p>{flash}</p></div>
 
       <Form method="post">
         <input type="hidden" id="id" name="id" value={lesson.id}></input>

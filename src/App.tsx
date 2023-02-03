@@ -6,7 +6,7 @@ import {
 import { Client, useClient } from 'urql';
 import Login from "./routes/login"
 import ProtectedRoute from "./routes/protected_route";
-import Root from "./routes/root";
+import Root, { loader as rootLoader } from "./routes/root";
 import GroupLessonsCheckout, { action as groupLessonsCheckoutAction, loader as groupLessonsCheckoutLoader } from './routes/group_lessons_checkout'
 import GroupLessonsNew, { action as groupLessonsNewAction, loader as groupLessonsNewLoader } from './routes/group_lessons_new'
 import LessonsCheckout, { action as lessonsCheckoutAction, loader as lessonsCheckoutLoader } from './routes/lessons_checkout'
@@ -23,6 +23,7 @@ function App() {
       path: "/",
       element: <ProtectedRoute><Root /></ProtectedRoute>,
       errorElement: <ErrorBoundary />,
+      loader: rootLoader,
       children: [
         { index: true, element: <LessonsNew />, action: lessonsNewAction({client}), loader: lessonsNewLoader({client})},
         { path: "lessons", element: <LessonsIndex />, loader: lessonsIndexLoader({client}) },
