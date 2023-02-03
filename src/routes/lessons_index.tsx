@@ -3,7 +3,6 @@ import { Client } from 'urql';
 import { GetLessonsDocument, Lesson, Rating } from '../graphql/generated'
 
 export const loader = ({client}: {client: Client}) => async ({ request, params}: {request: any, params: any}) => {
-  console.log("client", client.constructor.name)
   var result = await client.query(GetLessonsDocument,{}).toPromise()
   const lessons = result.data?.lessons || []
   return {lessons}
@@ -40,7 +39,6 @@ function LessonsIndex() {
 
     { 
       lessons.map((lesson, i) => {
-        console.log("lesson", lesson)
         var ratings = lesson.ratingSet
         while (ratings.length < MAX_GOALS_PER_STUDENT) {
           ratings.push({} as Rating)
