@@ -32,8 +32,8 @@ query GetLesson($id: ID!) {
   }
 }
 
-query GetLessons {
-  lessons {
+query GetLessons($userId: ID) {
+  lessons(userId: $userId) {
     id
     notes
     ratingSet {

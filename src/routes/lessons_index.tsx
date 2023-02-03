@@ -1,9 +1,11 @@
 import { useLoaderData } from "react-router-dom";
 import { Client } from 'urql';
 import { GetLessonsDocument, Lesson, Rating } from '../graphql/generated'
+import { getUser } from '../storage'
 
 export const loader = ({client}: {client: Client}) => async ({ request, params}: {request: any, params: any}) => {
-  var result = await client.query(GetLessonsDocument,{}).toPromise()
+  const user_id = getUser().id
+  const result = await client.query(GetLessonsDocument,{userId: user_id}).toPromise()
   const lessons = result.data?.lessons || []
   return {lessons}
 }
