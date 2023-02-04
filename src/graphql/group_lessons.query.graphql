@@ -24,6 +24,55 @@ query GetGroupLesson($id: ID!) {
           name
         }
       }
+      user {
+        id
+        firstName
+        lastName
+      }
+    }
+    timeIn
+    timeOut
+    user {
+      id
+      firstName
+      lastName
+    }
+  }
+}
+
+query GetGroupLessons($userId: ID) {
+  groupLessons(userId: $userId) {
+    id
+    lessonSet {
+      id
+      notes
+      ratingSet {
+        goal {
+          id
+          name
+        }
+        score
+      }
+      school {
+        id
+        name
+      }
+      student {
+        id
+        firstName
+        lastName
+        goals {
+          id
+          name
+        }
+      }
+      timeIn
+      timeOut
+      user {
+        id
+        firstName
+        lastName
+      }
     }
     timeIn
     timeOut
