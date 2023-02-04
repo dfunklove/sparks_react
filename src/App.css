@@ -24,7 +24,7 @@
  .center-contents { text-align:center !important; }
  .center-contents * { margin:auto; }
  .group-lesson-row { display: none }
- .hidden { display:none; }
+ .hidden { display:none !important; }
  .ul { list-style: none; }
  .minimize { padding: 0px; margin: 0px; }
  .slider { display:inline; }
