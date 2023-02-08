@@ -1,4 +1,4 @@
-import { Form, redirect, useLoaderData, useParams } from "react-router-dom";
+import { Form, redirect, useLoaderData, useSubmit } from "react-router-dom";
 import { Client } from "urql";
 import { GetGoalsDocument, GetGroupLessonDocument, GroupLessonInputPartial, Goal, GroupLesson, LessonInputPartial, UpdateGroupLessonDocument } from '../graphql/generated'
 const MAX_GOALS_PER_STUDENT = 3
@@ -65,14 +65,48 @@ export const loader = ({client}: {client: Client}) => async ({ request, params }
 }
 
 function GroupLessonsCheckout() {
+  const submit = useSubmit();
   const {flash, goals, group_lesson} = useLoaderData() as {flash: string, goals: [Goal], group_lesson: GroupLesson}
   const rating_scale = Array(10).fill(0).map((element, index) => index + 1)
+
+  const beforeSubmit = (event: any) => {
+    event.preventDefault()    
+    if (!checkForErrors())
+      submit(event.currentTarget);
+    return false;
+  }
+
+  /* 
+   * if goal.value and !score.value, show an error message 
+   */
+  const checkForErrors = () => {
+    var error = false;
+    const goals = document.querySelectorAll(".goal");
+    for (let i=0; i<goals.length; i++) {
+      const scoreElement = goals[i].parentElement?.querySelector(".score") as HTMLInputElement
+      const errorElement = goals[i].parentElement?.querySelector(".error") as HTMLElement
+      if ((goals[i] as HTMLInputElement).value && !scoreElement.value) {
+        errorElement.innerText = "Required";
+        error = true;
+      } else {
+        errorElement.innerText = "";
+      }
+    }
+    const errorElement = document.querySelector("label[for='submit']")
+    if (errorElement) {
+      if (error)
+        errorElement.innerHTML = "Please correct the errors to continue"
+      else
+        errorElement.innerHTML = ""
+    }
+    return error;
+  }
 
   return <><h2>Lesson Checkout</h2>
       <p>Lesson id: { group_lesson.id }, time in: { group_lesson.timeIn }</p>
       <div id="flash"><p>{flash}</p></div>
 
-      <Form method="post">
+      <Form method="post" onSubmit={beforeSubmit}>
       <input type="hidden" name="id" value={group_lesson.id}></input>
       <input type="hidden" name="student_count" value={group_lesson.lessonSet.length}></input>
       <div className="stdnt table">
@@ -98,18 +132,21 @@ function GroupLessonsCheckout() {
             <span className="td">{lesson.student.lastName}</span>
             <span className="td">{lesson.school.name}</span>
             <span className="td">
+            <div className="rating-list">
             { student_goals.map((sg, sg_i) => 
-              <div className="all-inline">
-              <select name={`student_${i}_rating${sg_i}_goalId`} defaultValue={sg.id}>
-                <option value="">[None]</option>
-                { goals.map((goal) => <option value={goal.id}>{goal.name}</option>) }
-              </select>
-              <select name={`student_${i}_rating${sg_i}_score`}>
-                <option value=""></option>
-                { rating_scale.map((val) => <option value={val}>{val}</option>)}
-              </select>
+              <div className="all-inline rating">
+                <select className="goal" name={`student_${i}_rating${sg_i}_goalId`} defaultValue={sg.id} onChange={checkForErrors}>
+                  <option value="">[None]</option>
+                  { goals.map((goal) => <option value={goal.id}>{goal.name}</option>) }
+                </select>
+                <select className="score" name={`student_${i}_rating${sg_i}_score`} onChange={checkForErrors}>
+                  <option value=""></option>
+                  { rating_scale.map((val) => <option value={val}>{val}</option>)}
+                </select>
+                <span className="error"></span>
               </div>
             )}
+            </div>
             </span>
             <textarea name={`student_${i}_notes`}></textarea>
           </div>
@@ -117,9 +154,15 @@ function GroupLessonsCheckout() {
         </div>
       </div>
       <div className="tr" style={{textAlign: "center"}}>
-        <label htmlFor="notes">Group Notes</label>
-        <textarea id="notes" name="notes" style={{width: "100%"}}></textarea></div>
-        <span className="td"><button style={{width: "100%"}} type="submit">Finish Lesson</button></span>
+        <span className="td">
+          <div className="all-block">
+            <label htmlFor="notes">Group Notes</label>
+            <textarea id="notes" name="notes" style={{width: "100%"}}></textarea>
+            <button style={{width: "100%"}} type="submit">Finish Lesson</button>
+            <label htmlFor="submit" className="error"></label>
+          </div>
+        </span>
+      </div>
       </div>
       </Form>
     </>
