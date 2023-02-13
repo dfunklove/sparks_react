@@ -42,7 +42,7 @@ function GroupLessonDisplay({ group_lesson }: Props) {
       <span className="td">{group_lesson.timeOut && new Date(group_lesson.timeOut).toLocaleTimeString('en-us', { hour: 'numeric', minute: 'numeric', second: 'numeric',})}</span>
       <span className="td">{group_lesson.timeIn && group_lesson.timeOut && ((new Date(group_lesson.timeOut).valueOf()-new Date(group_lesson.timeIn).valueOf())/(60*1000)).toFixed()}</span>
     </div>
-    {group_lesson.lessonSet.map(lesson => <LessonDisplay group_lesson_id={group_lesson.id} lesson={lesson}/>)}
+    {group_lesson.lessonSet.map(lesson => <LessonDisplay key={lesson.id} group_lesson_id={group_lesson.id} lesson={lesson}/>)}
   </>
 }
 

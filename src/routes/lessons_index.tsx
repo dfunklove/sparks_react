@@ -50,9 +50,9 @@ function LessonsIndex() {
     { 
       lessons.map((lesson, i) => {
         if ((lesson as any).lessonSet)
-          return <GroupLessonDisplay key={i} group_lesson={lesson as GroupLesson}/>
+          return <GroupLessonDisplay key={lesson.id} group_lesson={lesson as GroupLesson}/>
         else
-          return <LessonDisplay key={i} lesson={lesson as Lesson}/>
+          return <LessonDisplay key={lesson.id} lesson={lesson as Lesson}/>
       })
     }
     </div>

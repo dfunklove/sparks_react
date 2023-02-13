@@ -73,7 +73,7 @@ function GroupLessonsNew() {
         </div>
 
         { 
-          students.map((student, i) => <div className="tr">
+          students.map((student, i) => <div className="tr" key={student.id}>
             <input type="hidden" name={`student_${i}_id`} value={student.id}/>
             <input type="hidden" name={`student_${i}_school_id`} value={student.school.id}/>
             <span className="td"><input type="checkbox" name={`student_${i}_selected`} onClick={tally}/></span>

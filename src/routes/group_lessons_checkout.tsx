@@ -123,7 +123,7 @@ function GroupLessonsCheckout() {
           while (student_goals.length < MAX_GOALS_PER_STUDENT) {
             student_goals.push({} as any)
           }
-          return <div className="tr">
+          return <div className="tr" key={lesson.id}>
             <input type="hidden" name={`student_${i}_id`} value={lesson.id}></input>
             <span className="td">{lesson.student.firstName}</span>
             <span className="td">{lesson.student.lastName}</span>
@@ -131,14 +131,14 @@ function GroupLessonsCheckout() {
             <span className="td">
             <div className="rating-list">
             { student_goals.map((sg, sg_i) => 
-              <div className="all-inline rating">
+              <div className="all-inline rating" key={sg_i}>
                 <select className="goal" name={`student_${i}_rating${sg_i}_goalId`} defaultValue={sg.id} onChange={checkForErrors}>
                   <option value="">[None]</option>
-                  { goals.map((goal) => <option value={goal.id}>{goal.name}</option>) }
+                  { goals.map((goal, g_i) => <option key={g_i} value={goal.id}>{goal.name}</option>) }
                 </select>
                 <select className="score" name={`student_${i}_rating${sg_i}_score`} onChange={checkForErrors}>
                   <option value=""></option>
-                  { rating_scale.map((val) => <option value={val}>{val}</option>)}
+                  { rating_scale.map((val, v_i) => <option key={v_i} value={val}>{val}</option>)}
                 </select>
                 <span className="error"></span>
               </div>

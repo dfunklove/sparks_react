@@ -57,7 +57,7 @@ function LessonsNew() {
     </div>
 
     { 
-      students.map((student, i) => <Form method="post" className="tr">
+      students.map((student, i) => <Form method="post" className="tr" key={student.id}>
         <input type="hidden" name="student_id" value={student.id}></input>
         <input type="hidden" name="school_id" value={student.school.id}></input>
         <span className="td">{student.firstName}</span>

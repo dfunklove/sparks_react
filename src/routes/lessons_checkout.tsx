@@ -102,14 +102,14 @@ function LessonsCheckout() {
         <label>Goals</label>
         <div className="rating-list">
         { student_goals.map((sg, index) => 
-          <div className="all-inline rating">
+          <div className="all-inline rating" key={index}>
             <select className="goal" name={`rating${index}_goalId`} defaultValue={sg.id} onChange={checkForErrors}>
               <option value="">[None]</option>
-              { goals.map((goal) => <option value={goal.id}>{goal.name}</option>) }
+              { goals.map((goal, g_i) => <option key={g_i} value={goal.id}>{goal.name}</option>) }
             </select>
             <select className="score" name={`rating${index}_score`} onChange={checkForErrors}>
               <option value=""></option>
-              { rating_scale.map((val) => <option value={val}>{val}</option>)}
+              { rating_scale.map((val, v_i) => <option key={v_i} value={val}>{val}</option>)}
             </select>
             <span className="error"></span>
           </div>
