@@ -3,6 +3,7 @@ query GetLesson($id: ID!) {
     id
     notes
     ratingSet {
+      id
       goal {
         id
         name
@@ -37,6 +38,7 @@ query GetLessons($userId: ID) {
     id
     notes
     ratingSet {
+      id
       goal {
         id
         name

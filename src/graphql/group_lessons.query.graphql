@@ -5,6 +5,7 @@ query GetGroupLesson($id: ID!) {
       id
       notes
       ratingSet {
+        id
         goal {
           id
           name
@@ -47,6 +48,7 @@ query GetGroupLessons($userId: ID) {
       id
       notes
       ratingSet {
+        id
         goal {
           id
           name
