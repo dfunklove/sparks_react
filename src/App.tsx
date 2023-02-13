@@ -36,7 +36,7 @@ function App() {
     {
       path: "/login",
       element: <Login/>,
-      errorElement: <ErrorBoundary />,
+      errorElement: <Login/>,
       action: loginAction({client}),
     }
   ],

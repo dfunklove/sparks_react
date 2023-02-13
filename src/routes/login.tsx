@@ -1,4 +1,4 @@
-import { Form, redirect } from "react-router-dom";
+import { Form, redirect, useRouteError } from "react-router-dom";
 import { Client } from "urql";
 import { GetUserDocument, TokenAuthDocument } from "../graphql/generated"
 import { setToken, setUser } from "../storage";
@@ -29,17 +29,28 @@ export const action = ({client}: {client: Client}) => async ({ request, params }
 }
 
 function Login() {
+  const error: any = useRouteError();
+  let errorMessage = "";
+  if (error) {
+    if (error.status == 401) {
+      errorMessage = "Invalid email/password combination"
+    } else if (error.statusText) {
+      errorMessage = error.statusText
+    } else {
+      errorMessage = "Unable to login"
+    }
+  }
   return <div>
-    <h1>Sparksync</h1>
-    <h3>Music Lesson Tracker</h3>
-    <br></br>
+    <h1 style={{padding: 0, margin: 0}}>Sparksync</h1>
+    <h3 style={{padding: 0, margin: 0}}>Music Lesson Tracker</h3>
     <h2>Log in</h2>
-    <Form method="post">
+    <Form method="post" className="all-block">
       <label htmlFor="email">Email</label>
       <input id="email" name="email"/>
       <label htmlFor="password">Password</label>
       <input id="password" name="password" type="password"/>
-      <button type="submit">Log in</button>
+      <button id="submit" type="submit" className="btn">Log in</button>
+      <label htmlFor="submit" className="error">{errorMessage}</label>
     </Form>
   </div>
 }
