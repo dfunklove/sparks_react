@@ -44,7 +44,6 @@ function App() {
   
   function ErrorBoundary() {
     let error: any = useRouteError();
-    console.error("THIS IS THE BOUNDARY", error)
     return <div id="error-page">
       <h1>Oops!</h1>
       <p>Sorry, an unexpected error has occurred.</p>

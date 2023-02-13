@@ -29,8 +29,7 @@ export const action = ({client}: {client: Client}) => async ({ request, params }
     return redirect(`/lessons/new`);
   } else {
     const message="Unable to update lesson";
-    console.log(message, result.error)
-    throw new Response(result.error as any, { status: 404, statusText: message})
+    throw new Response(result.error as any, { status: 500, statusText: message})
   }
 };
 
@@ -45,7 +44,6 @@ export const loader = ({client}: {client: Client}) => async ({ request, params }
   const lesson = result.data?.lesson
   if (!lesson) {
     const message="Unable to find lesson"
-    console.log(message, result.error)
     throw new Response(message, {status: 404, statusText: message})
   }
   const result2 = await client.query(GetGoalsDocument,{}).toPromise()

@@ -5,7 +5,6 @@ const MAX_GOALS_PER_STUDENT = 3
 
 export const action = ({client}: {client: Client}) => async ({ request, params }: {request: any, params: any}) => {
   const formData = await request.formData();
-  console.log("formData", formData)
   const id = formData.get("id");
   const notes = formData.get("notes");
   const timeOut = new Date();
@@ -40,8 +39,7 @@ export const action = ({client}: {client: Client}) => async ({ request, params }
     return redirect(`/lessons/new`);
   } else {
     const message="Unable to update lesson";
-    console.log(message, result.error)
-    throw new Response(result.error as any, { status: 404, statusText: message})
+    throw new Response(result.error as any, { status: 500, statusText: message})
   }
 };
 
@@ -56,7 +54,6 @@ export const loader = ({client}: {client: Client}) => async ({ request, params }
   const group_lesson = result.data?.groupLesson
   if (!group_lesson) {
     const message="Unable to find lesson"
-    console.log(message, result.error)
     throw new Response(message, {status: 404, statusText: message})
   }
   const result2 = await client.query(GetGoalsDocument,{}).toPromise()

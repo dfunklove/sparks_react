@@ -5,7 +5,6 @@ import { getUser } from '../storage'
 
 export const action = ({client}: {client: Client}) => async ({ request, params }: {request: any, params: any}) => {
   const result = await client.query(OpenGroupLessonDocument,{userId: getUser()?.id}).toPromise()
-  console.log("result.data", result.data)
   if (result.data?.openGroupLesson?.id) {
     const lesson_id = result.data?.openGroupLesson?.id;
     return redirect(`/group_lessons/${lesson_id}/checkout?remind=true`);
@@ -29,8 +28,7 @@ export const action = ({client}: {client: Client}) => async ({ request, params }
     return redirect(`/group_lessons/${lesson_id}/checkout`);
   } else {
     const message="Unable to create lesson";
-    console.log(message, result2.error)
-    throw new Response(result2.error as any, { status: 404, statusText: message})
+    throw new Response(result2.error as any, { status: 500, statusText: message})
   }
 };
 

@@ -23,7 +23,6 @@ export const action = ({client}: {client: Client}) => async ({ request, params }
     return redirect(`/`);
   } else {
     const message="Unable to login";
-    console.log(message, result.error)
     throw new Response(result.error as any, { status: 401, statusText: message})
   }
 }

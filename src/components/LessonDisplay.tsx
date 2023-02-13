@@ -8,7 +8,6 @@ type Props = {
 }
 
 function LessonDisplay({ group_lesson_id, lesson }: Props) {
-    console.log("lesson", lesson)
     var ratings = lesson.ratingSet || []
     while (ratings.length < MAX_GOALS_PER_STUDENT) {
       ratings.push({} as Rating)

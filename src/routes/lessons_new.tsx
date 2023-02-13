@@ -28,8 +28,7 @@ export const action = ({client}: {client: Client}) => async ({ request, params }
     return redirect(`/lessons/${lesson_id}/checkout`);
   } else {
     const message="Unable to create lesson";
-    console.log(message, result2.error)
-    throw new Response(result2.error as any, { status: 404, statusText: message})
+    throw new Response(result2.error as any, { status: 500, statusText: message})
   }
 };
 
