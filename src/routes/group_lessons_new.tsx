@@ -4,12 +4,6 @@ import { CreateGroupLessonDocument, GetStudentsDocument, GroupLesson, OpenGroupL
 import { getUser } from '../storage'
 
 export const action = ({client}: {client: Client}) => async ({ request, params }: {request: any, params: any}) => {
-  const result = await client.query(OpenGroupLessonDocument,{userId: getUser()?.id}).toPromise()
-  if (result.data?.openGroupLesson?.id) {
-    const lesson_id = result.data?.openGroupLesson?.id;
-    return redirect(`/group_lessons/${lesson_id}/checkout?remind=true`);
-  }
-
   const formData = await request.formData();
   const student_count = parseInt(formData.get("student_count"));
   const student_ids = []
@@ -21,20 +15,26 @@ export const action = ({client}: {client: Client}) => async ({ request, params }
     }
   }
 
-  const result2 = await client.mutation(CreateGroupLessonDocument, {userId: getUser().id, studentIds: student_ids}).toPromise()
-  const resultData = result2.data?.createGroupLesson as GroupLesson
-  if (resultData?.id && !result2.error) {
+  const result = await client.mutation(CreateGroupLessonDocument, {userId: getUser().id, studentIds: student_ids}).toPromise()
+  const resultData = result.data?.createGroupLesson as GroupLesson
+  if (resultData?.id && !result.error) {
     const lesson_id = resultData.id
     return redirect(`/group_lessons/${lesson_id}/checkout`);
   } else {
     const message="Unable to create lesson";
-    throw new Response(result2.error as any, { status: 500, statusText: message})
+    throw new Response(result.error as any, { status: 500, statusText: message})
   }
 };
 
 export const loader = ({client}: {client: Client}) => async ({ request, params }: {request: any, params: any}) => {
-  const results = await client.query(GetStudentsDocument,{}).toPromise()
-  const students = results.data?.students || []
+  const result = await client.query(OpenGroupLessonDocument,{userId: getUser()?.id}).toPromise()
+  if (result.data?.openGroupLesson?.id) {
+    const lesson_id = result.data?.openGroupLesson?.id;
+    return redirect(`/group_lessons/${lesson_id}/checkout?remind=true`);
+  }
+
+  const result2 = await client.query(GetStudentsDocument,{}).toPromise()
+  const students = result2.data?.students || []
   return {students}
 }
 

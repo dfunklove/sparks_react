@@ -4,12 +4,6 @@ import { CreateLessonDocument, GetStudentsDocument, Lesson, LessonInput, OpenLes
 import { getUser } from '../storage'
 
 export const action = ({client}: {client: Client}) => async ({ request, params }: {request: any, params: any}) => {
-  const result = await client.query(OpenLessonDocument,{userId: getUser()?.id}).toPromise()
-  if (result.data?.openLesson?.id) {
-    const lesson_id = result.data?.openLesson?.id;
-    return redirect(`/lessons/${lesson_id}/checkout?remind=true`);
-  }
-
   const formData = await request.formData();
   const school_id = formData.get("school_id");
   const student_id = formData.get("student_id");
@@ -21,18 +15,24 @@ export const action = ({client}: {client: Client}) => async ({ request, params }
     user: { id: user_id}
   }
 
-  const result2 = await client.mutation(CreateLessonDocument, {lesson: lessonData}).toPromise()
-  const resultData = result2.data?.createLesson as Lesson
-  if (resultData?.id && !result2.error) {
+  const result = await client.mutation(CreateLessonDocument, {lesson: lessonData}).toPromise()
+  const resultData = result.data?.createLesson as Lesson
+  if (resultData?.id && !result.error) {
     const lesson_id = resultData.id
     return redirect(`/lessons/${lesson_id}/checkout`);
   } else {
     const message="Unable to create lesson";
-    throw new Response(result2.error as any, { status: 500, statusText: message})
+    throw new Response(result.error as any, { status: 500, statusText: message})
   }
 };
 
 export const loader = ({client}: {client: Client}) => async ({ request, params }: {request: any, params: any}) => {
+  const result = await client.query(OpenLessonDocument,{userId: getUser()?.id}).toPromise()
+  if (result.data?.openLesson?.id) {
+    const lesson_id = result.data?.openLesson?.id;
+    return redirect(`/lessons/${lesson_id}/checkout?remind=true`);
+  }
+
   const result2 = await client.query(GetStudentsDocument,{}).toPromise()
   const students = result2.data?.students || []
   return {students}
