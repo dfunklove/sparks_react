@@ -13,7 +13,7 @@ export const loader = ({client}: {client: Client}) => async ({ request, params}:
   var group_lessons = result2.data?.groupLessons || []
   lessons = lessons.concat(group_lessons as any)
   lessons.sort((a, b) => {
-    return new Date(a.timeIn).valueOf() - new Date(b.timeIn).valueOf()
+    return new Date(b.timeIn).valueOf() - new Date(a.timeIn).valueOf()
   })
   return {lessons}
 }
