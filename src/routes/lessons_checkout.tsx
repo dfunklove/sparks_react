@@ -1,7 +1,8 @@
 import { Form, redirect, useLoaderData, useSubmit } from "react-router-dom";
 import { Client } from "urql";
 import { GetGoalsDocument, GetLessonDocument, Goal, Lesson, LessonInputPartial, UpdateLessonDocument } from '../graphql/generated'
-import { MAX_GOALS_PER_STUDENT } from '../constants'
+import { LessonType, MAX_GOALS_PER_STUDENT } from '../constants'
+import { setLastLessonType } from "../storage";
 
 export const action = ({client}: {client: Client}) => async ({ request, params }: {request: any, params: any}) => {
   const formData = await request.formData();
@@ -26,6 +27,7 @@ export const action = ({client}: {client: Client}) => async ({ request, params }
   const result = await client.mutation(UpdateLessonDocument, {lesson: lessonData}).toPromise()
 
   if (result.data?.updateLesson && !result.error) {
+    setLastLessonType(LessonType.Single);
     return redirect(`/lessons/new`);
   } else {
     const message="Unable to update lesson";
