@@ -3,6 +3,7 @@ import { Client } from "urql";
 import { GetGoalsDocument, GetGroupLessonDocument, GroupLessonInputPartial, Goal, GroupLesson, LessonInputPartial, UpdateGroupLessonDocument } from '../graphql/generated'
 import { LessonType, MAX_GOALS_PER_STUDENT } from '../constants'
 import { setLastLessonType } from "../storage";
+import { checkFormErrors } from "../util";
 
 export const action = ({client}: {client: Client}) => async ({ request, params }: {request: any, params: any}) => {
   const formData = await request.formData();
@@ -70,35 +71,9 @@ function GroupLessonsCheckout() {
 
   const beforeSubmit = (event: any) => {
     event.preventDefault()    
-    if (!checkForErrors())
+    if (!checkFormErrors())
       submit(event.currentTarget);
     return false;
-  }
-
-  /* 
-   * if goal.value and !score.value, show an error message 
-   */
-  const checkForErrors = () => {
-    var error = false;
-    const goals = document.querySelectorAll(".goal");
-    for (let i=0; i<goals.length; i++) {
-      const scoreElement = goals[i].parentElement?.querySelector(".score") as HTMLInputElement
-      const errorElement = goals[i].parentElement?.querySelector(".error") as HTMLElement
-      if ((goals[i] as HTMLInputElement).value && !scoreElement.value) {
-        errorElement.innerText = "Required";
-        error = true;
-      } else {
-        errorElement.innerText = "";
-      }
-    }
-    const errorElement = document.querySelector("label[for='submit']")
-    if (errorElement) {
-      if (error)
-        errorElement.innerHTML = "Please correct the errors to continue"
-      else
-        errorElement.innerHTML = ""
-    }
-    return error;
   }
 
   return <>
@@ -135,11 +110,11 @@ function GroupLessonsCheckout() {
             <div className="rating-list">
             { student_goals.map((sg, sg_i) => 
               <div className="all-inline rating" key={sg_i}>
-                <select className="goal" name={`student_${i}_rating${sg_i}_goalId`} defaultValue={sg.id} onChange={checkForErrors}>
+                <select className="goal" name={`student_${i}_rating${sg_i}_goalId`} defaultValue={sg.id} onChange={checkFormErrors}>
                   <option value="">[None]</option>
                   { goals.map((goal, g_i) => <option key={g_i} value={goal.id}>{goal.name}</option>) }
                 </select>
-                <select className="score" name={`student_${i}_rating${sg_i}_score`} onChange={checkForErrors}>
+                <select className="score" name={`student_${i}_rating${sg_i}_score`} onChange={checkFormErrors}>
                   <option value=""></option>
                   { rating_scale.map((val, v_i) => <option key={v_i} value={val}>{val}</option>)}
                 </select>
