@@ -56,7 +56,7 @@ function GroupLessonsNew() {
   }
 
   return <div>
-    <h2>Start Single Lesson</h2>
+    <h2>Start Group Lesson</h2>
     <Form method="post">
     <input type="hidden" name="student_count" id="student_count" defaultValue={0}/>
 

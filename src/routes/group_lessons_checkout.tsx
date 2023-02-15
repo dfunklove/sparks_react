@@ -99,7 +99,8 @@ function GroupLessonsCheckout() {
     return error;
   }
 
-  return <><h2>Lesson Checkout</h2>
+  return <>
+      <h2>Group Lesson Checkout</h2>
       <p>Lesson id: { group_lesson.id }, time in: { group_lesson.timeIn }</p>
       <div id="flash"><p>{flash}</p></div>
 
