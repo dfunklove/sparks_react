@@ -22,7 +22,7 @@ function LessonsIndex() {
   const {lessons} = useLoaderData() as {lessons: [Lesson|GroupLesson]}
 
   if (!lessons?.length) {
-    return <div>No students have been assigned to you.  Please check back later or contact your supervisor.</div>
+    return <div>Nothing here yet.  As you finish lessons, they will appear here.</div>
   }
 
   return <div>
