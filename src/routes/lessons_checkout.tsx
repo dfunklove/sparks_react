@@ -1,7 +1,7 @@
 import { Form, redirect, useLoaderData, useSubmit } from "react-router-dom";
 import { Client } from "urql";
 import { GetGoalsDocument, GetLessonDocument, Goal, Lesson, LessonInputPartial, UpdateLessonDocument } from '../graphql/generated'
-const MAX_GOALS_PER_STUDENT = 3
+import { MAX_GOALS_PER_STUDENT } from '../constants'
 
 export const action = ({client}: {client: Client}) => async ({ request, params }: {request: any, params: any}) => {
   const formData = await request.formData();
