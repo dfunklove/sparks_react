@@ -1,6 +1,6 @@
 import { Form, redirect, useLoaderData } from "react-router-dom";
 import { Client } from "urql";
-import { CreateGroupLessonDocument, GetStudentsDocument, GroupLesson, OpenGroupLessonDocument, Student } from '../graphql/generated'
+import { CreateGroupLessonDocument, GetStudentsDocument, GroupLesson, OpenLessonDocument, Student } from '../graphql/generated'
 import { getUser } from '../storage'
 
 export const action = ({client}: {client: Client}) => async ({ request, params }: {request: any, params: any}) => {
@@ -27,10 +27,13 @@ export const action = ({client}: {client: Client}) => async ({ request, params }
 };
 
 export const loader = ({client}: {client: Client}) => async ({ request, params }: {request: any, params: any}) => {
-  const result = await client.query(OpenGroupLessonDocument,{userId: getUser()?.id}).toPromise()
-  if (result.data?.openGroupLesson?.id) {
-    const lesson_id = result.data?.openGroupLesson?.id;
-    return redirect(`/group_lessons/${lesson_id}/checkout?remind=true`);
+  const result = await client.query(OpenLessonDocument,{userId: getUser()?.id}).toPromise()
+  if (result.data?.openLesson?.id) {
+    const lesson_id = result.data.openLesson.id;
+    if ((result.data.openLesson as GroupLesson).lessonSet) {
+      return redirect(`/group_lessons/${lesson_id}/checkout?remind=true`);
+    }
+    return redirect(`/lessons/${lesson_id}/checkout?remind=true`);
   }
 
   const result2 = await client.query(GetStudentsDocument,{}).toPromise()

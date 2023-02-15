@@ -1,6 +1,6 @@
 import { Form, redirect, useLoaderData } from "react-router-dom";
 import { Client } from "urql";
-import { CreateLessonDocument, GetStudentsDocument, Lesson, LessonInput, OpenLessonDocument, Student } from '../graphql/generated'
+import { CreateLessonDocument, GetStudentsDocument, GroupLesson, Lesson, LessonInput, OpenLessonDocument, Student } from '../graphql/generated'
 import { getUser } from '../storage'
 
 export const action = ({client}: {client: Client}) => async ({ request, params }: {request: any, params: any}) => {
@@ -29,7 +29,10 @@ export const action = ({client}: {client: Client}) => async ({ request, params }
 export const loader = ({client}: {client: Client}) => async ({ request, params }: {request: any, params: any}) => {
   const result = await client.query(OpenLessonDocument,{userId: getUser()?.id}).toPromise()
   if (result.data?.openLesson?.id) {
-    const lesson_id = result.data?.openLesson?.id;
+    const lesson_id = result.data.openLesson.id;
+    if ((result.data.openLesson as GroupLesson).lessonSet) {
+      return redirect(`/group_lessons/${lesson_id}/checkout?remind=true`);
+    }
     return redirect(`/lessons/${lesson_id}/checkout?remind=true`);
   }
 
