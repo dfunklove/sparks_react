@@ -70,7 +70,15 @@ query GetLessons($userId: ID) {
 
 query OpenLesson($userId: ID!) {
   openLesson(userId: $userId) {
-    id
+    ... on GroupLesson {
+      id
+      lessonSet {
+        id
+      }
+    }
+    ... on Lesson {
+      id
+    }
   }
 }
 
