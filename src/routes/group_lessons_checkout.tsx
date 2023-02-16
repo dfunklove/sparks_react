@@ -68,8 +68,6 @@ export const loader = ({client}: {client: Client}) => async ({ request, params }
 function GroupLessonsCheckout() {
   const submit = useSubmit();
   const {flash, goals, group_lesson} = useLoaderData() as {flash: string, goals: [Goal], group_lesson: GroupLesson}
-  const rating_scale = Array(10).fill(0).map((element, index) => index + 1)
-
   const beforeSubmit = (event: any) => {
     event.preventDefault()    
     if (!checkFormErrors())
