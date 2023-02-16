@@ -30,9 +30,7 @@ export default function Root() {
         }
         </ul>
       </div>
-      <div id="flash">
-        <p>{flash}</p>
-      </div>
+      <p id="flash">{flash}</p>
       <div id="detail">
         <Outlet />
       </div>
