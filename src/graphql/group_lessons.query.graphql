@@ -31,6 +31,7 @@ query GetGroupLesson($id: ID!) {
         lastName
       }
     }
+    notes
     timeIn
     timeOut
     user {
@@ -76,6 +77,7 @@ query GetGroupLessons($userId: ID) {
         lastName
       }
     }
+    notes
     timeIn
     timeOut
     user {

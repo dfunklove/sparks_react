@@ -41,8 +41,12 @@ function GroupLessonDisplay({ group_lesson }: Props) {
       <span className="td">{group_lesson.timeOut && new Date(group_lesson.timeOut).toLocaleDateString('en-us', { year:"numeric", month:"short", day:"numeric"}) }</span>
       <span className="td">{group_lesson.timeOut && new Date(group_lesson.timeOut).toLocaleTimeString('en-us', { hour: 'numeric', minute: 'numeric', second: 'numeric',})}</span>
       <span className="td">{group_lesson.timeIn && group_lesson.timeOut && ((new Date(group_lesson.timeOut).valueOf()-new Date(group_lesson.timeIn).valueOf())/(60*1000)).toFixed()}</span>
+      {Array(6).fill(0).map((e,i) => <span key={i} className="td"></span>)}
+      <span className="td">{group_lesson.notes}</span>
     </div>
     {group_lesson.lessonSet.map(lesson => <LessonDisplay key={lesson.id} group_lesson_id={group_lesson.id} lesson={lesson}/>)}
+    <div className={`tr group-lesson-${group_lesson.id} hidden`}>
+    </div>
   </>
 }
 
