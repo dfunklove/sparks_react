@@ -23,3 +23,9 @@ export function checkFormErrors() {
   }
   return error;
 }
+
+export function setFlash(flash: string) {
+  let e = document.getElementById("flash");
+  if (e)
+    e.innerText = flash
+}
