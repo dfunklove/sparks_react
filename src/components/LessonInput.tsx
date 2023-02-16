@@ -7,7 +7,7 @@ export default function LessonInput({goals, index, lesson}: {goals: Goal[], inde
   while (student_goals.length < MAX_GOALS_PER_STUDENT) {
     student_goals.push({} as any)
   }
-  const rating_scale = Array(10).fill(0).map((element, index) => index + 1)
+  const rating_scale = Array(10).fill(0).map((element, index) => 10 - index)
   const prefix = index !== undefined ? `student_${index}_` : ""
 
   return <div className="lesson-fields" key={lesson.id}>
