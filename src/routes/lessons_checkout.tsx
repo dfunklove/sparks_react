@@ -3,7 +3,8 @@ import { Client } from "urql";
 import { GetGoalsDocument, GetLessonDocument, Goal, Lesson, LessonInputPartial, UpdateLessonDocument } from '../graphql/generated'
 import { LessonType, MAX_GOALS_PER_STUDENT } from '../constants'
 import { setLastLessonType } from "../storage";
-import { checkFormErrors } from "../util";
+import { checkFormErrors, setFlash } from "../util";
+import LessonInput from "../components/LessonInput";
 
 export const action = ({client}: {client: Client}) => async ({ request, params }: {request: any, params: any}) => {
   const formData = await request.formData();
@@ -57,12 +58,7 @@ export const loader = ({client}: {client: Client}) => async ({ request, params }
 function LessonsCheckout() {
   const submit = useSubmit();
   const {flash, goals, lesson} = useLoaderData() as {flash: string, goals: [Goal], lesson: Lesson}
-  var student_goals = lesson.student.goals
-  while (student_goals.length < MAX_GOALS_PER_STUDENT) {
-    student_goals.push({} as any)
-  }
-  const rating_scale = Array(10).fill(0).map((element, index) => index + 1)
-
+  setFlash(flash);
   const beforeSubmit = (event: any) => {
     event.preventDefault()    
     if (!checkFormErrors())
@@ -70,32 +66,12 @@ function LessonsCheckout() {
     return false;
   }
 
-  return <><h2>Lesson Checkout</h2>
-      <p>Lesson id: { lesson.id }, time in: { lesson.timeIn }</p>
-      <div id="flash"><p>{flash}</p></div>
-
-      <Form method="post" onSubmit={beforeSubmit}>
-        <input type="hidden" id="id" name="id" value={lesson.id}></input>
-        <label>Goals</label>
-        <div className="rating-list">
-        { student_goals.map((sg, index) => 
-          <div className="all-inline rating" key={index}>
-            <select className="goal" name={`rating${index}_goalId`} defaultValue={sg.id} onChange={checkFormErrors}>
-              <option value="">[None]</option>
-              { goals.map((goal, g_i) => <option key={g_i} value={goal.id}>{goal.name}</option>) }
-            </select>
-            <select className="score" name={`rating${index}_score`} onChange={checkFormErrors}>
-              <option value=""></option>
-              { rating_scale.map((val, v_i) => <option key={v_i} value={val}>{val}</option>)}
-            </select>
-            <span className="error"></span>
-          </div>
-        )}
-        </div>
+  return <>
+      <Form className="lessons-checkout" method="post" onSubmit={beforeSubmit}>
         <div className="all-block">
-          <label htmlFor="id">Notes</label>
-          <textarea name="notes"></textarea>
-          <button id="submit" type="submit">Finish Lesson</button>
+          <p className="time-in">Lesson started at: { new Date(lesson.timeIn).toLocaleString() }</p>
+          <LessonInput goals={goals} lesson={lesson} />
+          <button className="btn" id="submit" type="submit">Finish Lesson</button>
           <label htmlFor="submit" className="error"></label>
         </div>
       </Form>

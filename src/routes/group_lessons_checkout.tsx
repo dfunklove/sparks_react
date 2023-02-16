@@ -4,6 +4,7 @@ import { GetGoalsDocument, GetGroupLessonDocument, GroupLessonInputPartial, Goal
 import { LessonType, MAX_GOALS_PER_STUDENT } from '../constants'
 import { setLastLessonType } from "../storage";
 import { checkFormErrors } from "../util";
+import LessonInput from "../components/LessonInput";
 
 export const action = ({client}: {client: Client}) => async ({ request, params }: {request: any, params: any}) => {
   const formData = await request.formData();
@@ -77,9 +78,9 @@ function GroupLessonsCheckout() {
   }
 
   return <>
-      <h2>Group Lesson Checkout</h2>
-      <p>Lesson id: { group_lesson.id }, time in: { group_lesson.timeIn }</p>
       <div id="flash"><p>{flash}</p></div>
+      <h2>Group Lesson Checkout</h2>
+      <p className="time-in">Lesson started at: { new Date(group_lesson.timeIn).toLocaleString() }</p>
 
       <Form method="post" onSubmit={beforeSubmit}>
       <input type="hidden" name="id" value={group_lesson.id}></input>
@@ -96,36 +97,7 @@ function GroupLessonsCheckout() {
             <span className="td">Student Notes</span>
           </div>
         </div>
-        {group_lesson.lessonSet.map((lesson, i) => {
-          var student_goals = lesson.student.goals
-          while (student_goals.length < MAX_GOALS_PER_STUDENT) {
-            student_goals.push({} as any)
-          }
-          return <div className="tr" key={lesson.id}>
-            <input type="hidden" name={`student_${i}_id`} value={lesson.id}></input>
-            <span className="td">{lesson.student.firstName}</span>
-            <span className="td">{lesson.student.lastName}</span>
-            <span className="td">{lesson.school.name}</span>
-            <span className="td">
-            <div className="rating-list">
-            { student_goals.map((sg, sg_i) => 
-              <div className="all-inline rating" key={sg_i}>
-                <select className="goal" name={`student_${i}_rating${sg_i}_goalId`} defaultValue={sg.id} onChange={checkFormErrors}>
-                  <option value="">[None]</option>
-                  { goals.map((goal, g_i) => <option key={g_i} value={goal.id}>{goal.name}</option>) }
-                </select>
-                <select className="score" name={`student_${i}_rating${sg_i}_score`} onChange={checkFormErrors}>
-                  <option value=""></option>
-                  { rating_scale.map((val, v_i) => <option key={v_i} value={val}>{val}</option>)}
-                </select>
-                <span className="error"></span>
-              </div>
-            )}
-            </div>
-            </span>
-            <textarea name={`student_${i}_notes`}></textarea>
-          </div>
-        })}
+        {group_lesson.lessonSet.map((lesson, i) => <LessonInput goals={goals} index={i} key={lesson.id} lesson={lesson}/>)}
         </div>
       </div>
       <div className="tr" style={{textAlign: "center"}}>
