@@ -1,13 +1,9 @@
 import { User } from "./graphql/generated"
 
 const AUTH_TOKEN = 'auth-token';
-const FLASH = 'flash';
 const LAST_LESSON_TYPE = 'last-lesson-type';
 const USER = 'user';
 
-export const getFlash = () => localStorage.getItem(FLASH);
-export const setFlash = (flash: string) => localStorage.setItem(FLASH, flash);
-export const deleteFlash = () => localStorage.removeItem(AUTH_TOKEN);
 export const getLastLessonType = () => localStorage.getItem(LAST_LESSON_TYPE);
 export const setLastLessonType = (lesson_type: string) => localStorage.setItem(LAST_LESSON_TYPE, lesson_type);
 export const getToken = () => localStorage.getItem(AUTH_TOKEN);
