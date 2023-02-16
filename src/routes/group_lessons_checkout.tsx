@@ -3,7 +3,7 @@ import { Client } from "urql";
 import { GetGoalsDocument, GetGroupLessonDocument, GroupLessonInputPartial, Goal, GroupLesson, LessonInputPartial, UpdateGroupLessonDocument } from '../graphql/generated'
 import { LessonType, MAX_GOALS_PER_STUDENT } from '../constants'
 import { setLastLessonType } from "../storage";
-import { checkFormErrors } from "../util";
+import { checkFormErrors, setFlash } from "../util";
 import LessonInput from "../components/LessonInput";
 
 export const action = ({client}: {client: Client}) => async ({ request, params }: {request: any, params: any}) => {
@@ -68,6 +68,7 @@ export const loader = ({client}: {client: Client}) => async ({ request, params }
 function GroupLessonsCheckout() {
   const submit = useSubmit();
   const {flash, goals, group_lesson} = useLoaderData() as {flash: string, goals: [Goal], group_lesson: GroupLesson}
+  setFlash(flash);
   const beforeSubmit = (event: any) => {
     event.preventDefault()    
     if (!checkFormErrors())
@@ -76,7 +77,6 @@ function GroupLessonsCheckout() {
   }
 
   return <>
-      <div id="flash"><p>{flash}</p></div>
       <h2>Group Lesson Checkout</h2>
       <p className="time-in">Lesson started at: { new Date(group_lesson.timeIn).toLocaleString() }</p>
 
