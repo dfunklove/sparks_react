@@ -5,7 +5,7 @@ const MAX_GOALS_PER_STUDENT = 3
 
 type Props = {
     lesson: Lesson,
-    visible: boolean,
+    visible?: boolean,
 }
 
 function LessonDisplay({ lesson, visible }: Props) {
