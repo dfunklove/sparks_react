@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useLoaderData } from "react-router-dom";
 import { Client } from 'urql';
 import GroupLessonDisplay from '../components/GroupLessonDisplay'
@@ -19,7 +20,9 @@ export const loader = ({client}: {client: Client}) => async ({ request, params}:
 }
 
 function LessonsIndex() {
-  const {lessons} = useLoaderData() as {lessons: [Lesson|GroupLesson]}
+  const {lessons: lessonData} = useLoaderData() as {lessons: [Lesson|GroupLesson]};
+  const[lessons, setLessons] = useState(lessonData);
+  const[sortField, setSortField] = useState("");
 
   if (!lessons?.length) {
     return <div>Nothing here yet.  As you finish lessons, they will appear here.</div>
@@ -31,11 +34,11 @@ function LessonsIndex() {
     <div className="thead">
       <div className="tr">
         <span className="td"></span>
-        <span className="td">School</span>
-        <span className="td">Teacher</span>
-        <span className="td">Student</span>
-        <span className="td">Date</span>
-        <span className="td">Time Out</span>
+        <span className="td" onClick={() => {sortLessons('school.name')}}>School</span>
+        <span className="td" onClick={() => {sortLessons('user.firstName,user.lastName')}}>Teacher</span>
+        <span className="td" onClick={() => {sortLessons('student.firstName,student.lastName')}}>Student</span>
+        <span className="td" onClick={() => {sortLessons('timeOut')}}>Date</span>
+        <span className="td" onClick={() => {sortLessons('timeOut')}}>Time Out</span>
         <span className="td">Minutes</span>
         <span className="td">Goal</span>
         <span className="td"></span>
@@ -57,6 +60,42 @@ function LessonsIndex() {
     }
     </div>
   </div>
+
+  function sortLessons(field: string) {
+    function hasKey<O extends Object>(obj: O, key: PropertyKey): key is keyof O {
+      return key in obj
+    }
+    function combineFields(obj: any, fields: string[]) {
+      return fields.reduce((combined, field) => combined.concat(indexByFields(obj, field.split('.'))), "")
+    }
+    function indexByFields(obj: any, fields: string[]) {
+      return fields.reduce((obj, field) => {
+        if (hasKey(obj, field)) 
+          return obj[field] 
+        else
+          return obj
+        }, 
+        obj
+      )
+    }
+
+    const lessons_temp = Array.from(lessons)
+    if (field === sortField)
+      lessons_temp.reverse()
+    else {
+      const fields = field.split(',')
+      lessons_temp.sort((a, b) => {
+        const aval = combineFields(a, fields)
+        const bval = combineFields(b, fields)
+        if (aval?.localeCompare)
+          return aval.localeCompare(bval)
+        else
+          return 0
+      })
+    }
+    setLessons(lessons_temp as any)
+    setSortField(field)
+  }
 }
 
 export default LessonsIndex
