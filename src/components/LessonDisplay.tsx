@@ -4,17 +4,17 @@ import { Lesson, Rating } from '../graphql/generated'
 const MAX_GOALS_PER_STUDENT = 3
 
 type Props = {
-    group_lesson_id?: string,
     lesson: Lesson,
+    visible: boolean,
 }
 
-function LessonDisplay({ group_lesson_id, lesson }: Props) {
+function LessonDisplay({ lesson, visible }: Props) {
     var ratings = lesson.ratingSet || []
     for (let i=0; ratings.length < MAX_GOALS_PER_STUDENT; i++) {
       ratings.push({id: i.toString()} as Rating) // need ids for keys
     }
 
-    return <div className={`tr ${group_lesson_id? "group-lesson-"+group_lesson_id+" hidden" : ""}`}>
+    return <div className={`tr ${visible === false ? "hidden" : ""}`}>
       <span className="td"></span>  
       <span className="td">{lesson.school.name}</span>
       <span className="td">{lesson.user.firstName + " " + lesson.user.lastName}</span>
