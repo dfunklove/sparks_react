@@ -5,6 +5,7 @@ import { getUser } from '../storage'
 
 export const action = ({client}: {client: Client}) => async ({ request, params }: {request: any, params: any}) => {
   const formData = await request.formData();
+  var school_id = ""
   const student_count = parseInt(formData.get("student_count"));
   const student_ids = []
   for (let i=0; i < student_count; i++) {
@@ -12,10 +13,11 @@ export const action = ({client}: {client: Client}) => async ({ request, params }
     if (selected) {
       const id = formData.get(`student_${i}_id`);
       student_ids.push(id)
+      school_id = formData.get(`student_${i}_school_id`);
     }
   }
 
-  const result = await client.mutation(CreateGroupLessonDocument, {userId: getUser().id, studentIds: student_ids}).toPromise()
+  const result = await client.mutation(CreateGroupLessonDocument, {schoolId: school_id, studentIds: student_ids, userId: getUser().id}).toPromise()
   const resultData = result.data?.createGroupLesson as GroupLesson
   if (resultData?.id && !result.error) {
     const lesson_id = resultData.id

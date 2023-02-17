@@ -32,6 +32,10 @@ query GetGroupLesson($id: ID!) {
       }
     }
     notes
+    school {
+      id
+      name
+    }
     timeIn
     timeOut
     user {
@@ -78,6 +82,10 @@ query GetGroupLessons($userId: ID) {
       }
     }
     notes
+    school {
+      id
+      name
+    }
     timeIn
     timeOut
     user {
@@ -88,8 +96,8 @@ query GetGroupLessons($userId: ID) {
   }
 }
 
-mutation CreateGroupLesson($studentIds: [ID!]!, $userId: ID!) {
-  createGroupLesson(input: {studentIds: $studentIds, userId: $userId}) {
+mutation CreateGroupLesson($schoolId: ID!, $studentIds: [ID!]!, $userId: ID!) {
+  createGroupLesson(input: {schoolId: $schoolId, studentIds: $studentIds, userId: $userId}) {
     ... on GroupLesson {
       id
     }
