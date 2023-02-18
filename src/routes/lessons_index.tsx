@@ -34,19 +34,19 @@ function LessonsIndex() {
     <div className="thead">
       <div className="tr">
         <span className="td"></span>
-        <span className="td" onClick={() => {sortLessons('school.name')}}>School</span>
-        <span className="td" onClick={() => {sortLessons('user.firstName,user.lastName')}}>Teacher</span>
-        <span className="td" onClick={() => {sortLessons('student.firstName,student.lastName')}}>Student</span>
-        <span className="td" onClick={() => {sortLessons('timeOut')}}>Date</span>
-        <span className="td" onClick={() => {sortLessons('timeOut')}}>Time Out</span>
+        <span className="td" onClick={() => sortLessons('school.name')}>School</span>
+        <span className="td" onClick={() => sortLessons('user.firstName,user.lastName')}>Teacher</span>
+        <span className="td" onClick={() => sortLessons('student.firstName,student.lastName')}>Student</span>
+        <span className="td" onClick={() => sortLessons('timeOut')}>Date</span>
+        <span className="td" onClick={() => sortLessons('timeOut')}>Time Out</span>
         <span className="td">Minutes</span>
-        <span className="td">Goal</span>
+        <span className="td" onClick={() => sortLessons('ratingSet[0].goal.name')}>Goal</span>
         <span className="td"></span>
-        <span className="td">Goal</span>
+        <span className="td" onClick={() => sortLessons('ratingSet[1].goal.name')} >Goal</span>
         <span className="td"></span>
-        <span className="td">Goal</span>
+        <span className="td" onClick={() => sortLessons('ratingSet[2].goal.name')}>Goal</span>
         <span className="td"></span>
-        <span className="td">Notes</span>
+        <span className="td" onClick={() => sortLessons('notes')}>Notes</span>
       </div>
     </div>
 
@@ -62,23 +62,6 @@ function LessonsIndex() {
   </div>
 
   function sortLessons(field: string) {
-    function hasKey<O extends Object>(obj: O, key: PropertyKey): key is keyof O {
-      return key in obj
-    }
-    function combineFields(obj: any, fields: string[]) {
-      return fields.reduce((combined, field) => combined.concat(indexByFields(obj, field.split('.'))), "")
-    }
-    function indexByFields(obj: any, fields: string[]) {
-      return fields.reduce((obj, field) => {
-        if (hasKey(obj, field)) 
-          return obj[field] 
-        else
-          return obj
-        }, 
-        obj
-      )
-    }
-
     const lessons_temp = Array.from(lessons)
     if (field === sortField)
       lessons_temp.reverse()
@@ -96,6 +79,32 @@ function LessonsIndex() {
     setLessons(lessons_temp as any)
     setSortField(field)
   }
+}
+
+function hasKey<O extends Object>(obj: O, key: PropertyKey): key is keyof O {
+  return key in obj
+}
+function combineFields(obj: any, fields: string[]) {
+  return fields.reduce((combined, field) => combined.concat(indexByFields(obj, field.split('.'))), "")
+}
+function indexByFields(obj: any, fields: string[]) {
+  return fields.reduce((obj, field) => accessWithIndex(obj,field), obj)
+}
+function accessWithIndex(obj: any, field: string) {
+  const cleanField = removeIndex(field)
+  if (hasKey(obj, cleanField)) {
+    const index = extractIndex(field)
+    return index ? obj[cleanField][index] : obj[cleanField]
+  } else {
+    return obj
+  }
+}
+function extractIndex(field: string) {
+  const match = field.match(/\[(\d+)\]/)
+  return match ? match[1] : null
+}
+function removeIndex(field: string) {
+  return field.split('[')[0]
 }
 
 export default LessonsIndex
