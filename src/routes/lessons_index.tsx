@@ -39,7 +39,7 @@ function LessonsIndex() {
         <span className="td" onClick={() => sortLessons('student.firstName,student.lastName')}>Student</span>
         <span className="td" onClick={() => sortLessons('timeOut')}>Date</span>
         <span className="td" onClick={() => sortLessons('timeOut')}>Time Out</span>
-        <span className="td">Minutes</span>
+        <span className="td" onClick={() => sortByMinutes()}>Minutes</span>
         <span className="td" onClick={() => sortLessons('ratingSet[0].goal.name')}>Goal</span>
         <span className="td"></span>
         <span className="td" onClick={() => sortLessons('ratingSet[1].goal.name')} >Goal</span>
@@ -61,6 +61,13 @@ function LessonsIndex() {
     </div>
   </div>
 
+  function sortByMinutes() {
+    if ((lessons[0] as any)?.minutes === undefined)
+      lessons.forEach((lesson) => {
+        (lesson as any).minutes = lesson.timeIn && lesson.timeOut ? (new Date(lesson.timeOut).valueOf()-new Date(lesson.timeIn).valueOf())/(60*1000) : 0
+      });
+    sortLessons('minutes')
+  }
   function sortLessons(field: string) {
     const lessons_temp = Array.from(lessons)
     if (field === sortField)
@@ -68,24 +75,24 @@ function LessonsIndex() {
     else {
       const fields = field.split(',')
       lessons_temp.sort((a, b) => {
-        const aval = combineFields(a, fields)
-        const bval = combineFields(b, fields)
-        if (aval?.localeCompare)
-          return aval.localeCompare(bval)
-        else
-          return 0
+        const avalues = fields.map((field) => indexByFields(a, field.split('.')))
+        const bvalues = fields.map((field) => indexByFields(b, field.split('.')))
+        var result = 0
+        for (let i=0; i<avalues.length; i++)
+          if (avalues[i] && bvalues[i])
+            if (avalues[i].localeCompare)
+              result += avalues[i].localeCompare(bvalues[i])
+            else
+              result += bvalues[i] - avalues[i]
+        return result
       })
     }
     setLessons(lessons_temp as any)
     setSortField(field)
   }
 }
-
 function hasKey<O extends Object>(obj: O, key: PropertyKey): key is keyof O {
   return key in obj
-}
-function combineFields(obj: any, fields: string[]) {
-  return fields.reduce((combined, field) => combined.concat(indexByFields(obj, field.split('.'))), "")
 }
 function indexByFields(obj: any, fields: string[]) {
   return fields.reduce((obj, field) => accessWithIndex(obj,field), obj)
