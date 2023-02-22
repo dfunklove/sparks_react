@@ -27,7 +27,7 @@ function App() {
       errorElement: <ErrorBoundary />,
       loader: rootLoader,
       children: [
-        { index: true, element: <Index />, action: lessonsNewAction({client}), loader: lessonsNewLoader({client})},
+        { index: true, element: <Index />, action: indexAction({client}), loader: indexLoader({client})},
         { path: "lessons", element: <LessonsIndex />, loader: lessonsIndexLoader({client}) },
         { path: "lessons/:id/checkout", element: <LessonsCheckout />, action: lessonsCheckoutAction({client}), loader: lessonsCheckoutLoader({client}) },
         { path: "lessons/new", element: <LessonsNew />, action: lessonsNewAction({client}), loader: lessonsNewLoader({client}) },
@@ -47,6 +47,12 @@ function App() {
   function Index() {
     return getLastLessonType() === LessonType.Group ? <GroupLessonsNew /> : <LessonsNew />
   } 
+  function indexAction({client}: {client: Client}) {
+    return getLastLessonType() === LessonType.Group ? groupLessonsNewAction({client}) : lessonsNewAction({client})
+  }
+  function indexLoader({client}: {client: Client}) {
+    return getLastLessonType() === LessonType.Group ? groupLessonsNewLoader({client}) : lessonsNewLoader({client})
+  }
     
   function ErrorBoundary() {
     let error: any = useRouteError();
