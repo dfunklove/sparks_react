@@ -7,7 +7,7 @@ export const action = ({client}: {client: Client}) => async ({ request, params }
   const formData = await request.formData();
   const school_id = formData.get("school_id");
   const student_id = formData.get("student_id");
-  const user_id = getUser().id
+  const user_id = getUser()?.id
   const lessonData: LessonInput = { 
     school: { id: school_id }, 
     student: { id: student_id },

@@ -1,4 +1,4 @@
-import { Form, redirect, useLoaderData } from "react-router-dom";
+import { Form, redirect, useLoaderData, useSubmit } from "react-router-dom";
 import { Client } from "urql";
 import { CreateGroupLessonDocument, GetStudentsDocument, GroupLesson, OpenLessonDocument, Student } from '../graphql/generated'
 import { getUser } from '../storage'
@@ -17,7 +17,7 @@ export const action = ({client}: {client: Client}) => async ({ request, params }
     }
   }
 
-  const result = await client.mutation(CreateGroupLessonDocument, {schoolId: school_id, studentIds: student_ids, userId: getUser().id}).toPromise()
+  const result = await client.mutation(CreateGroupLessonDocument, {schoolId: school_id, studentIds: student_ids, userId: getUser()?.id}).toPromise()
   const resultData = result.data?.createGroupLesson as GroupLesson
   if (resultData?.id && !result.error) {
     const lesson_id = resultData.id
@@ -54,6 +54,7 @@ function tally(e: any) {
 }
 
 function GroupLessonsNew() {
+  const submit = useSubmit()
   const {students} = useLoaderData() as {students: [Student]}
 
   if (!students?.length) {
@@ -74,7 +75,7 @@ function GroupLessonsNew() {
 
   return <div>
     <h2>Start Group Lesson</h2>
-    <Form method="post">
+    <Form method="post" onSubmit={beforeSubmit}>
     <input type="hidden" name="student_count" id="student_count" defaultValue={0}/>
 
     <div className="stdnt table">
@@ -102,7 +103,7 @@ function GroupLessonsNew() {
         </div>
       </div>
       <div className="tr">
-        <span className="td" column-span="all"><button style={{width: "100%"}} type="submit" onClick={beforeSubmit}>Start Lesson</button>
+        <span className="td" column-span="all"><button style={{width: "100%"}} type="submit">Start Lesson</button>
         <label htmlFor="submit" className="error"></label></span>
       </div>
     </div>
