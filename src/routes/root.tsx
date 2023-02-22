@@ -12,7 +12,7 @@ export default function Root() {
   const navigate = useNavigate()
   return (
     <>
-      <nav className="navBar">
+      <nav className="container-fluid">
         <ul><li><b><Link to={`/`}>Sparks for Succes</Link></b></li></ul>
         <ul>
           <li><Link to={`lessons/new`}>Single Lesson</Link></li>
