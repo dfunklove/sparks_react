@@ -1,14 +1,8 @@
-import { Link, Outlet, useLoaderData, useNavigate } from "react-router-dom";
+import { Link, Outlet, useNavigate, useLocation } from "react-router-dom";
 import { deleteToken, deleteUser, getToken } from "../storage";
 
-export const loader = async ({ request, params }: {request: any, params: any}) => {
-  const searchParams = new URLSearchParams(request.url.split('?')[1])
-  const flash = searchParams?.get("flash")
-  return { flash }
-}
-
 export default function Root() {
-  const {flash} = useLoaderData() as any
+  const flash = useLocation().state?.flash
   const navigate = useNavigate()
   return (
     <>
@@ -31,8 +25,8 @@ export default function Root() {
         }
         </ul>
       </nav>
-      <p id="flash">{flash}</p>
       <main id="detail" className="container">
+        {flash && <mark>{flash}</mark>}
         <Outlet />
       </main>
     </>
