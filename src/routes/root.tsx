@@ -13,7 +13,7 @@ export default function Root() {
   return (
     <>
       <nav className="container-fluid">
-        <ul><li><b><Link to={`/`}>Sparks for Succes</Link></b></li></ul>
+        <ul><li><b><Link to={`/`}>Sparks for Success</Link></b></li></ul>
         <ul>
           <li><Link to={`lessons/new`}>Single Lesson</Link></li>
           <li><Link to={`group_lessons/new`}>Group Lesson</Link></li>
