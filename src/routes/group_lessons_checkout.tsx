@@ -3,7 +3,7 @@ import { Client } from "urql";
 import { GetGoalsDocument, GetGroupLessonDocument, GroupLessonInputPartial, Goal, GroupLesson, LessonInputPartial, UpdateGroupLessonDocument } from '../graphql/generated'
 import { LessonType, MAX_GOALS_PER_STUDENT } from '../constants'
 import { setLastLessonType } from "../storage";
-import { checkFormErrors, setFlash } from "../util";
+import { checkFormErrors } from "../util";
 import LessonInput from "../components/LessonInput";
 
 export const action = ({client}: {client: Client}) => async ({ request, params }: {request: any, params: any}) => {
@@ -49,22 +49,16 @@ export const action = ({client}: {client: Client}) => async ({ request, params }
 
 export const loader = ({client}: {client: Client}) => async ({ request, params }: {request: any, params: any}) => {
   const id = params["id"]
-  var flash = ""
-  const searchParams = new URLSearchParams(request.url.split('?')[1])
-  if (searchParams?.get("remind"))
-    flash = "Please finish open lesson before starting a new one"
-
   const result = await client.query(GetGroupLessonDocument,  {id: id}).toPromise()
   const group_lesson = result.data?.groupLesson
   const result2 = await client.query(GetGoalsDocument,{}).toPromise()
   const goals = result2.data?.goals || []
-  return {flash, goals, group_lesson}
+  return {goals, group_lesson}
 }
 
 function GroupLessonsCheckout() {
   const submit = useSubmit();
-  const {flash, goals, group_lesson} = useLoaderData() as {flash: string, goals: [Goal], group_lesson: GroupLesson}
-  setFlash(flash);
+  const {goals, group_lesson} = useLoaderData() as {goals: [Goal], group_lesson: GroupLesson}
   const beforeSubmit = (event: any) => {
     event.preventDefault()    
     if (!checkFormErrors())

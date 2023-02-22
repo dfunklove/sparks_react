@@ -34,9 +34,3 @@ export function msToTime(milli: number)
   var hours = Math.floor((milli / (60 * 60 * 1000)) % 60);
   return pad(hours) + ":" + pad(minutes);
 }
-
-export function setFlash(flash: string) {
-  let e = document.getElementById("flash");
-  if (e)
-    e.innerText = flash
-}

@@ -1,4 +1,4 @@
-import { Form, redirect, useLoaderData } from "react-router-dom";
+import { Form, Navigate, redirect, useLoaderData } from "react-router-dom";
 import { Client } from "urql";
 import { CreateLessonDocument, GetStudentsDocument, GroupLesson, Lesson, LessonInput, OpenLessonDocument, Student } from '../graphql/generated'
 import { getUser } from '../storage'
@@ -31,21 +31,25 @@ export const loader = ({client}: {client: Client}) => async ({ request, params }
   if (!userId)
     return {}
   const result = await client.query(OpenLessonDocument,{userId: userId}).toPromise()
-  if (result.data?.openLesson?.id) {
-    const lesson_id = result.data.openLesson.id;
-    if ((result.data.openLesson as GroupLesson).lessonSet) {
-      return redirect(`/group_lessons/${lesson_id}/checkout?remind=true`);
-    }
-    return redirect(`/lessons/${lesson_id}/checkout?remind=true`);
+  var students: any = []
+  const open_lesson = result.data?.openLesson
+  if (!open_lesson) {
+    const result2 = await client.query(GetStudentsDocument,{}).toPromise()
+    students = result2.data?.students || []
   }
-
-  const result2 = await client.query(GetStudentsDocument,{}).toPromise()
-  const students = result2.data?.students || []
-  return {students}
+  return {open_lesson, students}
 }
 
 function LessonsNew() {
-  const {students} = useLoaderData() as {students: [Student]}
+  const {open_lesson, students} = useLoaderData() as {open_lesson: GroupLesson|Lesson, students: [Student]}
+
+  if (open_lesson?.id) {
+    const flash = "Please finish open lesson before starting a new one"
+    if ((open_lesson as GroupLesson).lessonSet)
+      return <Navigate to={`/group_lessons/${open_lesson.id}/checkout`} state={{flash: flash}}/>
+    else
+      return <Navigate to={`/lessons/${open_lesson.id}/checkout`} state={{flash: flash}}/>
+  }
 
   if (!students?.length) {
     return <div>No students have been assigned to you.  Please check back later or contact your supervisor.</div>
