@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   createBrowserRouter,
   RouterProvider,
@@ -19,15 +20,27 @@ const BASE_PATH = "/sparks-react"
 
 function App() {
   const client: Client = useClient()
+  const [token, setToken] = useState<string>();
 
+  useEffect(() => {
+    const token = localStorage.getItem('auth-token');
+    if (token) {
+     setToken(token as any);
+    }
+  }, []);
+
+  useEffect(() => {
+    token ? localStorage.setItem('auth-token', token as any) : localStorage.removeItem('auth-token')
+  }, [token]);
+  
   const router = createBrowserRouter([
     {
       path: "/",
-      element: <ProtectedRoute><Root /></ProtectedRoute>,
+      element: <ProtectedRoute token={token}><Root token={token} deleteToken={setToken}/></ProtectedRoute>,
       errorElement: <ErrorBoundary />,
       loader: rootLoader,
       children: [
-        { index: true, element: <Index />, action: lessonsNewAction({client}), loader: lessonsNewLoader({client})},
+        { index: true, element: <Index />, action: indexAction({client}), loader: indexLoader({client})},
         { path: "lessons", element: <LessonsIndex />, loader: lessonsIndexLoader({client}) },
         { path: "lessons/:id/checkout", element: <LessonsCheckout />, action: lessonsCheckoutAction({client}), loader: lessonsCheckoutLoader({client}) },
         { path: "lessons/new", element: <LessonsNew />, action: lessonsNewAction({client}), loader: lessonsNewLoader({client}) },
@@ -37,17 +50,25 @@ function App() {
     },
     {
       path: "/login",
-      element: <Login/>,
-      errorElement: <Login/>,
-      action: loginAction({client}),
+      element: <Login token={token} />,
+      errorElement: <Login token={token} />,
+      action: loginAction({client, setToken}),
     }
   ],
   { basename: BASE_PATH });
 
   function Index() {
     return getLastLessonType() === LessonType.Group ? <GroupLessonsNew /> : <LessonsNew />
-  } 
-    
+  }
+
+  function indexAction({client}: {client: Client}) {
+    return getLastLessonType() === LessonType.Group ? groupLessonsNewAction({client}) : lessonsNewAction({client})
+  }
+
+  function indexLoader({client}: {client: Client}) {
+    return getLastLessonType() === LessonType.Group ? groupLessonsNewLoader({client}) : lessonsNewLoader({client})
+  }
+  
   function ErrorBoundary() {
     let error: any = useRouteError();
     return <div id="error-page">

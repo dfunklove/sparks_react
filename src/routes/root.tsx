@@ -1,5 +1,5 @@
 import { Link, Outlet, useLoaderData, useNavigate } from "react-router-dom";
-import { deleteToken, deleteUser, getToken } from "../storage";
+import { deleteUser } from "../storage";
 
 export const loader = async ({ request, params }: {request: any, params: any}) => {
   const searchParams = new URLSearchParams(request.url.split('?')[1])
@@ -7,7 +7,7 @@ export const loader = async ({ request, params }: {request: any, params: any}) =
   return { flash }
 }
 
-export default function Root() {
+export default function Root({token, deleteToken} : {token: any, deleteToken: Function}) {
   const {flash} = useLoaderData() as any
   const navigate = useNavigate()
   return (
@@ -18,7 +18,7 @@ export default function Root() {
           <li><Link to={`lessons/new`}>Single Lesson</Link></li>
           <li><Link to={`group_lessons/new`}>Group Lesson</Link></li>
           <li><Link to={`lessons`}>My Lessons</Link></li>
-        { getToken() &&
+        { token &&
           <li><a href="#"
             onClick={() => {
               deleteToken()
