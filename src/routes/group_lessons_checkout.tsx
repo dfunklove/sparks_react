@@ -56,10 +56,6 @@ export const loader = ({client}: {client: Client}) => async ({ request, params }
 
   const result = await client.query(GetGroupLessonDocument,  {id: id}).toPromise()
   const group_lesson = result.data?.groupLesson
-  if (!group_lesson) {
-    const message="Unable to find lesson"
-    throw new Response(message, {status: 404, statusText: message})
-  }
   const result2 = await client.query(GetGoalsDocument,{}).toPromise()
   const goals = result2.data?.goals || []
   return {flash, goals, group_lesson}
@@ -74,6 +70,11 @@ function GroupLessonsCheckout() {
     if (!checkFormErrors())
       submit(event.currentTarget);
     return false;
+  }
+
+  if (!group_lesson) {
+    const message="Unable to find lesson"
+    throw new Response(message, {status: 404, statusText: message})
   }
 
   return <>
