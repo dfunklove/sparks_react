@@ -39,13 +39,15 @@ function LessonsIndex() {
         <span className="td" onClick={() => sortLessons('student.firstName,student.lastName')}>Student</span>
         <span className="td" onClick={() => sortLessons('timeOut')}>Date</span>
         <span className="td" onClick={() => sortLessons('timeOut')}>Time Out</span>
-        <span className="td" onClick={() => sortByMinutes()}>Minutes</span>
-        <span className="td" onClick={() => sortLessons('ratingSet[0].goal.name')}>Goal</span>
+        <span className="td" onClick={() => sortByMinutes()}>Length</span>
+        {/*<span className="td" onClick={() => sortLessons('ratingSet[0].goal.name')}>Goal</span>
         <span className="td"></span>
         <span className="td" onClick={() => sortLessons('ratingSet[1].goal.name')} >Goal</span>
         <span className="td"></span>
         <span className="td" onClick={() => sortLessons('ratingSet[2].goal.name')}>Goal</span>
         <span className="td"></span>
+        */}
+        <span className="td">Goals</span>
         <span className="td" onClick={() => sortLessons('notes')}>Notes</span>
       </div>
     </div>

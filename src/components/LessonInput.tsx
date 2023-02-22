@@ -16,15 +16,15 @@ export default function LessonInput({goals, index, lesson}: {goals: Goal[], inde
     <span className="lesson-field student-last-name">{lesson.student.lastName}</span>
     <span className="lesson-field school">{lesson.school.name}</span>
     <label>Goals</label>
-    <span className="lesson-field goals">
+    <span className="lesson-field ratings">
     <div className="rating-list">
     { student_goals.map((sg, sg_i) => 
-      <div className="all-inline rating" key={sg_i}>
+      <div className="rating" key={sg_i}>
         <select className="goal" name={`${prefix}rating${sg_i}_goalId`} defaultValue={sg.id} onChange={checkFormErrors}>
           <option value="">[None]</option>
           { goals.map((goal, g_i) => <option key={g_i} value={goal.id}>{goal.name}</option>) }
         </select>
-        <select className="score" name={`${prefix}rating${sg_i}_score`} onChange={checkFormErrors}>
+        <select className="score" name={`${prefix}rating${sg_i}_score`} onChange={checkFormErrors} required={sg.id ? true : false}>
           <option value=""></option>
           { rating_scale.map((val, v_i) => <option key={v_i} value={val}>{val}</option>)}
         </select>

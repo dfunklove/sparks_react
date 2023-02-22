@@ -60,6 +60,18 @@ function GroupLessonsNew() {
     return <div>No students have been assigned to you.  Please check back later or contact your supervisor.</div>
   }
 
+  function beforeSubmit(e: any) {
+    const student_count = document.getElementById("student_count") as HTMLInputElement
+    let val = parseInt(student_count.value);
+    if (val < 2) {
+      e.preventDefault()
+      const errorElement = document.querySelector("label[for='submit']")
+      if (errorElement) {
+        errorElement.innerHTML = "Please select 2 or more students"
+      }    
+    }
+  }
+
   return <div>
     <h2>Start Group Lesson</h2>
     <Form method="post">
@@ -90,7 +102,8 @@ function GroupLessonsNew() {
         </div>
       </div>
       <div className="tr">
-        <span className="td" column-span="all"><button style={{width: "100%"}} type="submit">Start Lesson</button></span>
+        <span className="td" column-span="all"><button style={{width: "100%"}} type="submit" onClick={beforeSubmit}>Start Lesson</button>
+        <label htmlFor="submit" className="error"></label></span>
       </div>
     </div>
     </Form>

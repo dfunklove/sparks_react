@@ -44,14 +44,14 @@ span.td { display:table-cell; }
 
 .table .lesson-fields { display:table-row; }
 .table .lesson-fields label { display:none }
-.table .lesson-field { display:table-cell; }
+.table .lesson-field { display:table-cell; vertical-align: middle;}
 
 .lessons-checkout .lesson-field.student-first-name, .lessons-checkout .lesson-field.student-last-name { 
   display: inline-block; 
   font-size: 1.5em; 
   font-weight: bold; 
   position: relative; 
-  top: -1.5em; 
+  /*top: -1.5em; */
 }
 .lessons-checkout .lesson-field.student-first-name::after {
   content: " ";
@@ -60,11 +60,19 @@ span.td { display:table-cell; }
 .lessons-checkout .lesson-field.student-last-name::after {
   content: " . Check Out"
 }
-.lessons-checkout .lesson-field.school { display: none; }
+.lessons-checkout .lesson-field.school,
+  .lessons-checkout .lesson-field.student-first-name,
+  .lessons-checkout .lesson-field.student-last-name { 
+    display: none; 
+}
 .lessons-checkout .lesson-field.notes * { width: 100%; }
-.lessons-checkout .time-in { position: relative; top: 2.5em; }
+/*.lessons-checkout .time-in { position: relative; top: 2.5em; }*/
 
 .courses span.td { padding: 0.125em }
+.rating { display:flex }
+.rating .goal { flex: 2 0.5 75%; }
+.rating .score { flex: 0.5 2 25%; }
+
 
 div.stdnt {
   border-collapse: collapse;
@@ -72,6 +80,11 @@ div.stdnt {
 .stdnt span.td {
   border: 1px solid black;
   padding: 1px;
+  vertical-align: middle;
+}
+
+.stdnt button {
+  margin-bottom: 0; /* override style from pico.css */
 }
 
 table.stdnt {

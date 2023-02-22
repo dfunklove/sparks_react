@@ -12,7 +12,8 @@ export default function Root() {
   const navigate = useNavigate()
   return (
     <>
-      <div className="navBar">
+      <nav className="navBar">
+        <ul><li><b><Link to={`/`}>Sparks for Succes</Link></b></li></ul>
         <ul>
           <li><Link to={`lessons/new`}>Single Lesson</Link></li>
           <li><Link to={`group_lessons/new`}>Group Lesson</Link></li>
@@ -29,11 +30,11 @@ export default function Root() {
           </a></li>
         }
         </ul>
-      </div>
+      </nav>
       <p id="flash">{flash}</p>
-      <div id="detail">
+      <main id="detail" className="container">
         <Outlet />
-      </div>
+      </main>
     </>
   );
 }

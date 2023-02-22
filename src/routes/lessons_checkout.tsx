@@ -68,12 +68,11 @@ function LessonsCheckout() {
 
   return <>
       <Form className="lessons-checkout" method="post" onSubmit={beforeSubmit}>
-        <div className="all-block">
-          <p className="time-in">Lesson started at: { new Date(lesson.timeIn).toLocaleString() }</p>
-          <LessonInput goals={goals} lesson={lesson} />
-          <button className="btn" id="submit" type="submit">Finish Lesson</button>
-          <label htmlFor="submit" className="error"></label>
-        </div>
+        <h2>{`${lesson.student.firstName} ${lesson.student.lastName} . Check Out`}</h2>
+        <p className="time-in">Lesson started at: { new Date(lesson.timeIn).toLocaleString() }</p>
+        <LessonInput goals={goals} lesson={lesson} />
+        <button id="submit" type="submit">Finish Lesson</button>
+        <label htmlFor="submit" className="error"></label>
       </Form>
     </>
 }

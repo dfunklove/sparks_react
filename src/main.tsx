@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom/client'
 import { createClient, Provider } from 'urql';
 import App from './App'
 import './App.css'
+//import './mvp.css'
+import '../node_modules/@picocss/pico/css/pico.min.css'
 import { getToken } from './storage'
 
 const client = createClient({

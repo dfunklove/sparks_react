@@ -39,19 +39,30 @@ function Login() {
       errorMessage = "Unable to login"
     }
   }
-  return <div>
-    <h1 style={{padding: 0, margin: 0}}>Sparksync</h1>
-    <h3 style={{padding: 0, margin: 0}}>Music Lesson Tracker</h3>
-    <h2>Log in</h2>
-    <Form method="post" className="all-block">
-      <label htmlFor="email">Email</label>
-      <input id="email" name="email"/>
-      <label htmlFor="password">Password</label>
-      <input id="password" name="password" type="password"/>
-      <button id="submit" type="submit" className="btn">Log in</button>
-      <label htmlFor="submit" className="error">{errorMessage}</label>
-    </Form>
-  </div>
+  return <main className="container">
+    <article className="grid">
+      <div>
+        <h1 style={{padding: 0, margin: 0}}>Sparksync</h1>
+        <h3 style={{padding: 0, margin: 0}}>Music Lesson Tracker</h3>
+        <h2>Sign in</h2>
+        <Form method="post" className="">
+          <label htmlFor="email">Email</label>
+          <input id="email" name="email" required/>
+          <label htmlFor="password">Password</label>
+          <input id="password" name="password" type="password" required/>
+          <button id="submit" type="submit">Login</button>
+          <label htmlFor="submit" className="error">{errorMessage}</label>
+        </Form>
+      </div>
+      <div style={
+        {
+          "backgroundImage": "url(sparkler.jpg)",
+          "backgroundPosition": "center",
+          "backgroundSize": "cover"
+        }}>
+      </div>
+    </article>
+  </main>
 }
 
 export default Login

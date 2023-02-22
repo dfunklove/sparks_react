@@ -8,10 +8,10 @@ export function checkFormErrors() {
     const scoreElement = goals[i].parentElement?.querySelector(".score") as HTMLInputElement
     const errorElement = goals[i].parentElement?.querySelector(".error") as HTMLElement
     if ((goals[i] as HTMLInputElement).value && !scoreElement.value) {
-      errorElement.innerText = "Required";
+      scoreElement.required = true;
       error = true;
     } else {
-      errorElement.innerText = "";
+      scoreElement.required = false;
     }
   }
   const errorElement = document.querySelector("label[for='submit']")
@@ -22,6 +22,17 @@ export function checkFormErrors() {
       errorElement.innerHTML = ""
   }
   return error;
+}
+
+export function msToTime(milli: number)
+{
+  function pad(n: number) {
+    return ('00' + n).slice(-2);
+  }
+
+  var minutes = Math.floor((milli / (1000 * 60)) % 60);
+  var hours = Math.floor((milli / (60 * 60 * 1000)) % 60);
+  return pad(hours) + ":" + pad(minutes);
 }
 
 export function setFlash(flash: string) {

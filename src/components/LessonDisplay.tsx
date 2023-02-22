@@ -1,5 +1,6 @@
 import React from 'react';
 import { Lesson, Rating } from '../graphql/generated'
+import { msToTime } from '../util'
 
 const MAX_GOALS_PER_STUDENT = 3
 
@@ -20,13 +21,18 @@ function LessonDisplay({ lesson, visible }: Props) {
       <span className="td">{lesson.user.firstName + " " + lesson.user.lastName}</span>
       <span className="td">{lesson.student.firstName + " " + lesson.student.lastName}</span>        
       <span className="td">{lesson.timeIn && new Date(lesson.timeIn).toLocaleDateString('en-us', { year:"numeric", month:"short", day:"numeric"}) }</span>
-      <span className="td">{lesson.timeOut ? new Date(lesson.timeOut).toLocaleTimeString('en-us', { hour: 'numeric', minute: 'numeric', second: 'numeric',}) : "None"}</span>
-      <span className="td">{lesson.timeIn && lesson.timeOut ? ((new Date(lesson.timeOut).valueOf()-new Date(lesson.timeIn).valueOf())/(60*1000)).toFixed() : "None"}</span>
+      <span className="td">{lesson.timeOut ? new Date(lesson.timeOut).toLocaleTimeString('en-us', { hour: 'numeric', minute: 'numeric'}) : "None"}</span>
+      <span className="td">{lesson.timeIn && lesson.timeOut ? msToTime(new Date(lesson.timeOut).valueOf()-new Date(lesson.timeIn).valueOf()) : "None"}</span>
+      <span className="td">
+        <details>
+          <summary>Goals</summary>
       { ratings.map((rating, index) => <React.Fragment key={rating.id}>
           <span className="td">{rating.goal?.name}</span>
           <span className="td">{rating.score}</span>
         </React.Fragment>
       )}
+        </details>
+      </span>
       <span className="td">{lesson.notes}</span>
     </div> 
 }
