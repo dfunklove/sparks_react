@@ -1,4 +1,4 @@
-import { Form, redirect, useLoaderData, useSubmit } from "react-router-dom";
+import { Form, redirect, useLoaderData } from "react-router-dom";
 import { Client } from "urql";
 import { CreateGroupLessonDocument, GetStudentsDocument, GroupLesson, OpenLessonDocument, Student } from '../graphql/generated'
 import { getUser } from '../storage'
@@ -29,7 +29,10 @@ export const action = ({client}: {client: Client}) => async ({ request, params }
 };
 
 export const loader = ({client}: {client: Client}) => async ({ request, params }: {request: any, params: any}) => {
-  const result = await client.query(OpenLessonDocument,{userId: getUser()?.id}).toPromise()
+  const userId = getUser()?.id
+  if (!userId)
+    return {}
+  const result = await client.query(OpenLessonDocument,{userId: userId}).toPromise()
   if (result.data?.openLesson?.id) {
     const lesson_id = result.data.openLesson.id;
     if ((result.data.openLesson as GroupLesson).lessonSet) {
@@ -54,7 +57,6 @@ function tally(e: any) {
 }
 
 function GroupLessonsNew() {
-  const submit = useSubmit()
   const {students} = useLoaderData() as {students: [Student]}
 
   if (!students?.length) {

@@ -7,7 +7,9 @@ import { GetGroupLessonsDocument, GetLessonsDocument, GroupLesson, Lesson, Ratin
 import { getUser } from '../storage'
 
 export const loader = ({client}: {client: Client}) => async ({ request, params}: {request: any, params: any}) => {
-  const user_id = getUser().id
+  const user_id = getUser()?.id
+  if (!user_id)
+    return {}
   const result = await client.query(GetLessonsDocument,{userId: user_id}).toPromise()
   var lessons = result.data?.lessons || []
   const result2 = await client.query(GetGroupLessonsDocument,{userId: user_id}).toPromise()

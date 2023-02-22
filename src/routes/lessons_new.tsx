@@ -27,7 +27,10 @@ export const action = ({client}: {client: Client}) => async ({ request, params }
 };
 
 export const loader = ({client}: {client: Client}) => async ({ request, params }: {request: any, params: any}) => {
-  const result = await client.query(OpenLessonDocument,{userId: getUser()?.id}).toPromise()
+  const userId = getUser()?.id
+  if (!userId)
+    return {}
+  const result = await client.query(OpenLessonDocument,{userId: userId}).toPromise()
   if (result.data?.openLesson?.id) {
     const lesson_id = result.data.openLesson.id;
     if ((result.data.openLesson as GroupLesson).lessonSet) {
