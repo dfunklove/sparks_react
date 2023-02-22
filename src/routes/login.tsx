@@ -1,11 +1,10 @@
-import { Form, Navigate, redirect, useActionData, useRouteError } from "react-router-dom";
-import { createRequest, Client, OperationContext, OperationResult } from "urql";
-import { pipe, Source, subscribe, toPromise } from 'wonka';
+import { Form, redirect, useRouteError } from "react-router-dom";
+import { Client } from "urql";
 import { GetUserDocument, TokenAuthDocument } from "../graphql/generated"
-import { setUser } from "../storage";
+import { setToken, setUser } from "../storage";
 
 
-export const action = ({client, setToken}: {client: Client, setToken: Function}) => async ({ request, params }: {request: any, params: any}) => {
+export const action = ({client}: {client: Client}) => async ({ request, params }: {request: any, params: any}) => {
   const formData = await request.formData();
   const email = formData.get("email");
   const password = formData.get("password");
@@ -13,31 +12,22 @@ export const action = ({client, setToken}: {client: Client, setToken: Function})
   const result = await client.mutation(TokenAuthDocument, {email: email, password: password}).toPromise()
   if (result.data?.tokenAuth?.token && !result.error) {
     const token = result.data.tokenAuth.token
+    setToken(token)
 
-    // This extra complexity is needed to pass the token to the client.
-    // Otherwise the client would be dependent on the result of setToken, which is async.
-    const result2: OperationResult = await new Promise((resolve) => {
-      pipe(client.executeQuery(createRequest(GetUserDocument,{}), { fetchOptions: { headers: { authorization: `JWT ${token}` }}}), 
-        subscribe(resolve));
-    })
-    
+    const result2 = await client.query(GetUserDocument,{}).toPromise()
     if (result2.data?.user && !result2.error) {
       const user = result2.data.user
       setUser(user)
-    } else {
-      const message="Unable to login";
-      throw new Response(result2.error as any, { status: 401, statusText: message})
     }
-  
-    setToken(token) // Set it last because it triggers render
-    return token;
+
+    return redirect(`/`);
   } else {
     const message="Unable to login";
     throw new Response(result.error as any, { status: 401, statusText: message})
   }
 }
 
-function Login({token}: {token: any}) {
+function Login() {
   const error: any = useRouteError();
   let errorMessage = "";
   if (error) {
@@ -49,8 +39,7 @@ function Login({token}: {token: any}) {
       errorMessage = "Unable to login"
     }
   }
-  return token ? <Navigate to="/" /> :
-  <main className="container">
+  return <main className="container">
     <article className="grid">
       <div>
         <h1 style={{padding: 0, margin: 0}}>Sparksync</h1>
