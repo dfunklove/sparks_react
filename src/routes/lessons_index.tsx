@@ -35,7 +35,7 @@ function LessonsIndex() {
     <div className="stdnt table">
     <div className="thead">
       <div className="tr">
-        <span className="td"></span>
+        <span className="td no-border-left"></span>
         <span className="td" onClick={() => sortLessons('school.name')}>School</span>
         <span className="td" onClick={() => sortLessons('user.firstName,user.lastName')}>Teacher</span>
         <span className="td" onClick={() => sortLessons('student.firstName,student.lastName')}>Student</span>

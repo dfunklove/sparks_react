@@ -12,7 +12,7 @@ function GroupLessonDisplay({ group_lesson }: Props) {
 
   return <>
     <div className="tr">
-      <span className="td">
+      <span className="td no-border-left">
         <button className={`minimize ${expand === true ? "hidden" : ""}`} onClick={() => {setExpand(true)}}>+</button>
         <button className={`minimize ${expand === false ? "hidden" : ""}`} onClick={() => {setExpand(false)}}>-</button>
       </span>

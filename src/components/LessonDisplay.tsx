@@ -16,7 +16,7 @@ function LessonDisplay({ lesson, visible }: Props) {
     }
 
     return <div className={`tr ${visible === false ? "hidden" : ""}`}>
-      <span className="td"></span>  
+      <span className="td no-border-left"></span>  
       <span className="td">{lesson.school.name}</span>
       <span className="td">{lesson.user.firstName + " " + lesson.user.lastName}</span>
       <span className="td">{lesson.student.firstName + " " + lesson.student.lastName}</span>        
