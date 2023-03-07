@@ -6,7 +6,6 @@ export function checkFormErrors() {
   const goals = document.querySelectorAll(".goal");
   for (let i=0; i<goals.length; i++) {
     const scoreElement = goals[i].parentElement?.querySelector(".score") as HTMLInputElement
-    const errorElement = goals[i].parentElement?.querySelector(".error") as HTMLElement
     if ((goals[i] as HTMLInputElement).value && !scoreElement.value) {
       scoreElement.required = true;
       error = true;
