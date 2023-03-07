@@ -12,9 +12,10 @@ export default function LessonInput({goals, index, lesson}: {goals: Goal[], inde
 
   return <div className="lesson-fields" key={lesson.id}>
     <input type="hidden" name={`${prefix}id`} value={lesson.id}></input>
-    <span className="lesson-field student-first-name">{lesson.student.firstName}</span>
-    <span className="lesson-field student-last-name">{lesson.student.lastName}</span>
-    <span className="lesson-field school">{lesson.school.name}</span>
+    <span className="lesson-field student-name">
+      <span className="student-first-name">{lesson.student.firstName} </span>
+      <span className="student-last-name">{lesson.student.lastName}</span>
+    </span>
     <label>Goals</label>
     <span className="lesson-field ratings">
     <div className="rating-list">
