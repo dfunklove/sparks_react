@@ -37,14 +37,35 @@ label { margin-top: 10px; }
 .checkbox-withlabel * { display:inline; }
 
 /* display form as table */
-div.table { display:table; }
-div.thead { display:table-header-group; font-weight: bold; text-align: center }
-form.tr, div.tr { display:table-row; }
-span.td { display:table-cell; }
+.table { display:table; border-collapse: separate; border-spacing: 5px;}
+.thead { display:table-header-group; font-weight: bold; text-align: center }
+.tr { display:table-row; }
+.td { display:table-cell; vertical-align: middle; }
 
 .table .lesson-fields { display:table-row; }
 .table .lesson-fields label { display:none }
-.table .lesson-field { display:table-cell; vertical-align: middle;}
+.table .lesson-field { display:table-cell; vertical-align: middle; margin: 1px }
+
+@media 
+only screen and (max-width: 760px) {
+
+	/* Force table to not be like tables anymore */
+	.table.responsive, .thead.responsive, .tbody.responsive, .th.responsive, .td.responsive, .tr.responsive { 
+		display: block; 
+	}
+	
+	/* Hide table headers (but not display: none;, for accessibility) */
+	.thead.responsive .tr.responsive { 
+		position: absolute;
+		top: -9999px;
+		left: -9999px;
+	}
+	
+  .table.responsive .lesson-fields { display:block; border-bottom: 1px solid; border: #000000}
+  .table.responsive .lesson-fields label { display:block; }
+  .table.responsive .lesson-field { display:block; }
+  .table.responsive .lesson-field.student-name { font-size: larger; }
+}
 
 .lessons-checkout .lesson-field.student-first-name, .lessons-checkout .lesson-field.student-last-name { 
   display: inline-block; 
@@ -71,26 +92,26 @@ span.td { display:table-cell; }
 .courses span.td { padding: 0.125em }
 .rating { display:flex }
 .rating .goal { flex: 2 0.5 75%; }
-.rating .score { flex: 0.5 2 25%; }
+.rating .score { flex: 0.5 2 content; }
 
 
 div.stdnt {
   border-collapse: collapse;
 }
-.stdnt span.td {
+.stdnt .td {
   border: 1px solid black;
   padding: 1px;
   vertical-align: middle;
 }
 
-.stdnt button {
+.table button {
   margin-bottom: 0; /* override style from pico.css */
 }
 
 table.stdnt {
   border-collapse: collapse;
 }
-table.stdnt td.no-border-left, th.no-border-left { 
+.stdnt .no-border-left, .no-border-left { 
   border-left:0px;
   border-top:0px;
   border-bottom:0px;
