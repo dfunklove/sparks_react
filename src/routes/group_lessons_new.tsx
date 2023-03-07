@@ -84,9 +84,9 @@ function GroupLessonsNew() {
     <Form method="post" onSubmit={beforeSubmit}>
     <input type="hidden" name="student_count" id="student_count" defaultValue={0}/>
 
-    <div className="stdnt table">
+    <div className="table">
       <div className="tr">
-        <div className="stdnt table">
+        <div className="table">
         <div className="thead">
           <div className="tr">
             <span className="td">&nbsp;</span>

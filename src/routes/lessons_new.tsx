@@ -57,7 +57,7 @@ function LessonsNew() {
 
   return <div>
     <h2>Start Single Lesson</h2>
-    <div className="stdnt table">
+    <div className="table">
     <div className="thead">
       <div className="tr">
         <span className="td">F Name</span>
