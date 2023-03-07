@@ -71,41 +71,40 @@ function GroupLessonsCheckout() {
     throw new Response(message, {status: 404, statusText: message})
   }
 
-  return <>
-      <h2>Group Lesson Checkout</h2>
-      <p className="time-in">Lesson started at: { new Date(group_lesson.timeIn).toLocaleString() }</p>
-
-      <Form method="post" onSubmit={beforeSubmit}>
-      <input type="hidden" name="id" value={group_lesson.id}></input>
-      <input type="hidden" name="student_count" value={group_lesson.lessonSet.length}></input>
-      <div className="stdnt table">
-      <div className="tr">
-        <div className="stdnt table">
-        <div className="thead">
-          <div className="tr">
-            <span className="td">F Name</span>
-            <span className="td">L Name</span>
-            <span className="td">School</span>
-            <span className="td">Goals/Ratings</span>
-            <span className="td">Student Notes</span>
-          </div>
-        </div>
-        {group_lesson.lessonSet.map((lesson, i) => <LessonInput goals={goals} index={i} key={lesson.id} lesson={lesson}/>)}
+  return <Form className="group-lessons-checkout" method="post" onSubmit={beforeSubmit}>
+    <h2>Group Lesson Checkout</h2>
+    <p>
+      <span className="time-in">Lesson started at: { new Date(group_lesson.timeIn).toLocaleString() }</span>
+      <br/>
+      <span className="school">School: {group_lesson.school.name}</span>
+    </p>
+    <input type="hidden" name="id" value={group_lesson.id}></input>
+    <input type="hidden" name="student_count" value={group_lesson.lessonSet.length}></input>
+    <div className="table responsive">
+    <div className="tr responsive">
+      <div className="table responsive">
+      <div className="thead responsive">
+        <div className="tr responsive">
+          <span className="td responsive">Name</span>
+          <span className="td responsive">Goals/Ratings</span>
+          <span className="td responsive">Student Notes</span>
         </div>
       </div>
-      <div className="tr" style={{textAlign: "center"}}>
-        <span className="td">
-          <div className="all-block">
-            <label htmlFor="notes">Group Notes</label>
-            <textarea id="notes" name="notes" style={{width: "100%"}}></textarea>
-            <button style={{width: "100%"}} type="submit">Finish Lesson</button>
-            <label htmlFor="submit" className="error"></label>
-          </div>
-        </span>
+      {group_lesson.lessonSet.map((lesson, i) => <LessonInput goals={goals} index={i} key={lesson.id} lesson={lesson}/>)}
       </div>
-      </div>
-      </Form>
-    </>
+    </div>
+    <div className="tr responsive" style={{textAlign: "center"}}>
+      <span className="td responsive">
+        <div className="all-block">
+          <label htmlFor="notes">Group Notes</label>
+          <textarea id="notes" name="notes" style={{width: "100%"}}></textarea>
+          <button style={{width: "100%"}} type="submit">Finish Lesson</button>
+          <label htmlFor="submit" className="error"></label>
+        </div>
+      </span>
+    </div>
+    </div>
+  </Form>
 }
 
 export default GroupLessonsCheckout
