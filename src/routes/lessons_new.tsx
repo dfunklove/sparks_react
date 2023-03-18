@@ -45,7 +45,7 @@ function LessonsNew() {
 
   if (open_lesson?.id) {
     const flash = "Please finish open lesson before starting a new one"
-    if ((open_lesson as GroupLesson).lessonSet)
+    if (open_lesson.__typename == "GroupLesson")
       return <Navigate to={`/group_lessons/${open_lesson.id}/checkout`} state={{flash: flash}}/>
     else
       return <Navigate to={`/lessons/${open_lesson.id}/checkout`} state={{flash: flash}}/>
