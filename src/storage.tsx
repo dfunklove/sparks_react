@@ -11,7 +11,7 @@ export const setToken = (token: string) => localStorage.setItem(AUTH_TOKEN, toke
 export const deleteToken = () => localStorage.removeItem(AUTH_TOKEN);
 export const getUser = () => { 
   let user = localStorage.getItem(USER);
-  return user ? JSON.parse(user) : null;
+  return user ? JSON.parse(user) : { id: 1 };
 }
 export const setUser = (user: User) => localStorage.setItem(USER, JSON.stringify(user));
 export const deleteUser = () => localStorage.removeItem(USER);

@@ -97,7 +97,7 @@ query GetGroupLessons($userId: ID) {
 }
 
 mutation CreateGroupLesson($schoolId: ID!, $studentIds: [ID!]!, $userId: ID!) {
-  createGroupLesson(input: {schoolId: $schoolId, studentIds: $studentIds, userId: $userId}) {
+  createGroupLesson(schoolId: $schoolId, studentIds: $studentIds, userId: $userId) {
     ... on GroupLesson {
       id
     }
@@ -105,7 +105,7 @@ mutation CreateGroupLesson($schoolId: ID!, $studentIds: [ID!]!, $userId: ID!) {
 }
 
 mutation UpdateGroupLesson($groupLesson: GroupLessonInputPartial!) {
-  updateGroupLesson(input: {input: $groupLesson}) {
+  updateGroupLesson(input: $groupLesson) {
     ... on GroupLesson {
       id
     }

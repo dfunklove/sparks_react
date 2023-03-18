@@ -26,7 +26,7 @@ function LessonsIndex() {
   const[lessons, setLessons] = useState(lessonData);
   const[sortField, setSortField] = useState("");
 
-  if (!lessons?.length) {
+  if (!lessonData?.length) {
     return <div>Nothing here yet.  As you finish lessons, they will appear here.</div>
   }
 

@@ -4,15 +4,12 @@ import {
   useRouteError,
 } from "react-router-dom";
 import { Client, useClient } from 'urql';
-import Login from "./routes/login"
-import ProtectedRoute from "./routes/protected_route";
 import Root from "./routes/root";
 import GroupLessonsCheckout, { action as groupLessonsCheckoutAction, loader as groupLessonsCheckoutLoader } from './routes/group_lessons_checkout'
 import GroupLessonsNew, { action as groupLessonsNewAction, loader as groupLessonsNewLoader } from './routes/group_lessons_new'
 import LessonsCheckout, { action as lessonsCheckoutAction, loader as lessonsCheckoutLoader } from './routes/lessons_checkout'
 import LessonsIndex, { loader as lessonsIndexLoader } from './routes/lessons_index'
 import LessonsNew, { action as lessonsNewAction, loader as lessonsNewLoader } from './routes/lessons_new'
-import { action as loginAction } from "./routes/login"
 import { LessonType } from "./constants";
 import { getLastLessonType } from "./storage";
 const BASE_PATH = "/sparks-react"
@@ -23,7 +20,7 @@ function App() {
   const router = createBrowserRouter([
     {
       path: "/",
-      element: <ProtectedRoute><Root /></ProtectedRoute>,
+      element: <Root/>,
       errorElement: <ErrorBoundary />,
       children: [
         { index: true, element: <Index />, action: indexAction({client}), loader: indexLoader({client})},
@@ -34,12 +31,6 @@ function App() {
         { path: "group_lessons/:id/checkout", element: <GroupLessonsCheckout />, action: groupLessonsCheckoutAction({client}), loader: groupLessonsCheckoutLoader({client}) },
       ],
     },
-    {
-      path: "/login",
-      element: <Login/>,
-      errorElement: <Login/>,
-      action: loginAction({client}),
-    }
   ],
   { basename: BASE_PATH });
 
@@ -63,7 +54,7 @@ function App() {
       </p>
     </div>
   }
-  
+
   return (
     <RouterProvider router={router} />
   )
